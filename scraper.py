@@ -11,9 +11,10 @@ soup = BeautifulSoup(urlopen(url), "html.parser")
 
 meldingen = {}
 
-for i, melding in enumerate(soup.find_all('div', {
+for i, bord in enumerate(soup.find_all('div', {
 		'id':'bordzondersnelheid'})):
 	# melding = str(melding)
+	melding = bord.parent
 	meldingen[str(i)] = str(melding)
 
 export = open(fileName + ".json", "w+")
