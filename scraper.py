@@ -3,16 +3,24 @@ from urllib2 import urlopen
 from json import dump
 
 from classes import Melding
-from scrapefunctions import get_zijde, get_wegnummer, get_hm_paal
+from scrapefunctions import \
+	get_zijde, \
+	get_wegnummer, \
+	get_hm_paal, \
+	get_type_controle, \
+	get_tijd, \
+	get_details
 
 
-url = "http://flits.flitsservice.nl/meldingen/vandaag.aspx"
+
 fileName = "export"
+url = "http://flits.flitsservice.nl/meldingen/vandaag.aspx"
+urlVoorbeeld = "file:///Users/simonprive/Dropbox/programming/projects/flitsers/flitsservice_voorbeeld.html"
 
 meldingHtmlKenmerk = {'id':'bordzondersnelheid'}
 
 
-soup = BeautifulSoup(urlopen(url), "html.parser")
+soup = BeautifulSoup(urlopen(urlVoorbeeld), "html.parser")
 
 items = {}
 
@@ -34,22 +42,28 @@ for i, melding in enumerate(meldingen):
 		wegnummer = get_wegnummer(melding)
 		zijde = get_zijde(melding)
 		hm_paal = get_hm_paal(melding)
-		
+		type_controle = get_type_controle(melding)
+		tijd = get_tijd(melding)
+		details = get_details(melding)
 
+		newMelding = Melding(
+			melding_id=melding_id,
+			soort_weg=soort_weg,
+			wegnummer=wegnummer,
+			zijde=zijde,
+			hm_paal=hm_paal,
+			type_controle=type_controle,
+			tijd=tijd,
+			details=details)
+
+		print newMelding.__dict__
+
+		
 
 	elif regionale_weg:
 		soort_weg = "regionale weg"
 	else:
 		soort_weg = None
-
-	# get wegnummer
-	# get zijde
-	# get richting
-	# get hm_paal
-	# get type_controle
-	# get tijd
-	# get details
-
 
 
 	# melding = str(melding)
@@ -57,8 +71,6 @@ for i, melding in enumerate(meldingen):
 
 	# if snelweg
 
-# print melding
-
-export = open(fileName + ".json", "w+")
-dump(items, export, indent=4)
-export.close()
+	export = open(fileName + ".json", "w+")
+	dump(newMelding.__dict__, export, indent=4)
+	export.close()
