@@ -1,2 +1,6 @@
 *.pyc
 *.json
+
+# voorbeeldwebsite
+flitsservice_voorbeeld.html
+flitsservice_voorbeeld_files/*
