@@ -3,5 +3,5 @@
 *.DS_Store
 
 # voorbeeldwebsite
-flitsservice_voorbeeld.html
-flitsservice_voorbeeld_files/*
+app/flitsservice_voorbeeld.html
+app/flitsservice_voorbeeld_files/*
