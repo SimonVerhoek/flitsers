@@ -1,5 +1,6 @@
 *.pyc
 *.json
+*.DS_Store
 
 # voorbeeldwebsite
 flitsservice_voorbeeld.html
