@@ -46,10 +46,10 @@ for i, melding in enumerate(meldingen):
 		hm_paal = get_hm_paal(melding=melding, hm_paal_id=REGIONALE_WEG['hm_paal_id'])
 	else:
 		pass
+
 	type_controle = get_type_controle(melding)
 	tijd = get_tijd(melding)
 	details = get_details(melding)
-
 
 	newMelding = Melding(
 		melding_id=i,
@@ -69,7 +69,7 @@ for i, melding in enumerate(meldingen):
 	items[str(i)] = str(melding)
 
 	if 'newMelding' in locals():
-		export = open(fileName + ".json", "w+")
+		export = open(FILENAME + ".json", "w+")
 		dump(newMelding.__dict__, export, indent=4)
 		export.close()
 	
