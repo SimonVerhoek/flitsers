@@ -5,6 +5,9 @@ MELDING_HTML = {'id':'bordzondersnelheid'}
 LINKS = 'li'
 RECHTS = 're'
 
+CONTROLE_TYPES = ['Radar']
+
+# soorten info te scrapen
 WEGNUMMER = {
 	'element': 'div',
 	'kenmerk': 'id'
@@ -31,17 +34,25 @@ DETAILS = {
 }
 
 
-
-
+# soorten wegen
 SNELWEG = {
+	'element': 'div',
+	'kenmerk': 'id',
 	'soort_weg': 'snelweg',
 	'wegnummer_id': 'snelwegtekst',
 	'zijde_id': 'richting',
 	'hm_paal_id': 'hm'
 }
 REGIONALE_WEG = {
+	'element': 'div',
+	'kenmerk': 'id',
 	'soort_weg': 'regionale_weg',
 	'wegnummer_id': 'nwegtekst',
 	'zijde_id': 'richting',
 	'hm_paal_id': 'hm'
 }
+
+WEGTYPES = [
+	SNELWEG,
+	REGIONALE_WEG
+]
