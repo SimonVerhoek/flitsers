@@ -31,9 +31,6 @@ for i, melding in enumerate(meldingen):
 	melding = melding.parent
 	melding = melding.parent
 
-	melding_id = i
-
-
 	snelweg = melding.find(
 		SNELWEG['element'], 
 		{SNELWEG['kenmerk']:SNELWEG['soort_weg']}
@@ -49,25 +46,21 @@ for i, melding in enumerate(meldingen):
 		wegnummer = get_wegnummer(melding=melding, wegnummer_id=SNELWEG['wegnummer_id'])
 		zijde = get_zijde(melding=melding, zijde_id=SNELWEG['zijde_id'])
 		hm_paal = get_hm_paal(melding=melding, hm_paal_id=SNELWEG['hm_paal_id'])
-		type_controle = get_type_controle(melding)
-		tijd = get_tijd(melding)
-		details = get_details(melding)
-
 		
 	elif regionale_weg:
 		soort_weg = REGIONALE_WEG['soort_weg']
 		wegnummer = get_wegnummer(melding=melding, wegnummer_id=REGIONALE_WEG['wegnummer_id'])
 		zijde = get_zijde(melding=melding, zijde_id=REGIONALE_WEG['zijde_id'])
 		hm_paal = get_hm_paal(melding=melding, hm_paal_id=REGIONALE_WEG['hm_paal_id'])
-		type_controle = get_type_controle(melding)
-		tijd = get_tijd(melding)
-		details = get_details(melding)
 	else:
-		soort_weg = None
+		pass
+	type_controle = get_type_controle(melding)
+	tijd = get_tijd(melding)
+	details = get_details(melding)
 
 
 	newMelding = Melding(
-		melding_id=melding_id,
+		melding_id=i,
 		soort_weg=soort_weg,
 		wegnummer=wegnummer,
 		zijde=zijde,
