@@ -58,8 +58,6 @@ for i, melding in enumerate(meldingen):
 
 		print newMelding.__dict__
 
-		
-
 	elif regionale_weg:
 		soort_weg = "regionale weg"
 	else:
@@ -71,6 +69,9 @@ for i, melding in enumerate(meldingen):
 
 	# if snelweg
 
-	export = open(fileName + ".json", "w+")
-	dump(newMelding.__dict__, export, indent=4)
-	export.close()
+
+	if 'newMelding' in locals():
+		export = open(fileName + ".json", "w+")
+		dump(newMelding.__dict__, export, indent=4)
+		export.close()
+	
