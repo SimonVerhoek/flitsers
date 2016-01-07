@@ -20,7 +20,7 @@ urlVoorbeeld = "file:///Users/simonprive/Dropbox/programming/projects/flitsers/f
 meldingHtmlKenmerk = {'id':'bordzondersnelheid'}
 
 
-soup = BeautifulSoup(urlopen(urlVoorbeeld), "html.parser")
+soup = BeautifulSoup(urlopen(url), "html.parser")
 
 items = {}
 
