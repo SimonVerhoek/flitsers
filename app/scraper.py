@@ -10,6 +10,7 @@ from scrapefunctions import \
 	get_type_controle, \
 	get_tijd, \
 	get_details
+from consts import MELDING_HTML_ELEMENT, MELDING_HTML
 
 
 
@@ -17,14 +18,13 @@ fileName = "export"
 url = "http://flits.flitsservice.nl/meldingen/vandaag.aspx"
 urlVoorbeeld = "file:///Users/simonprive/Dropbox/programming/projects/flitsers/flitsservice_voorbeeld.html"
 
-meldingHtmlKenmerk = {'id':'bordzondersnelheid'}
 
 
 soup = BeautifulSoup(urlopen(url), "html.parser")
 
 items = {}
 
-meldingen = soup.find_all('div', meldingHtmlKenmerk)
+meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
 
 for i, melding in enumerate(meldingen):
