@@ -1,6 +1,8 @@
+from urllib2 import urlopen
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 from sqlalchemy import *
-from urllib2 import urlopen
 from json import dump
 import sqlite3
 
@@ -16,11 +18,14 @@ from scrapefunctions import \
 from consts import FILENAME, URL, LOCAL_URL
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 
+today = datetime.today().strftime('%Y-%m-%d')
 
 soup = BeautifulSoup(urlopen(URL), "html.parser")
 meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
 items = {}
+
+s = db_session()
 
 for i, melding in enumerate(meldingen):
 	# move to correct element level
@@ -54,8 +59,6 @@ for i, melding in enumerate(meldingen):
 	tijd = get_tijd(melding)
 	details = get_details(melding)
 
-	s = db_session()
-
 	newMelding = Melding(
 		soort_weg=soort_weg,
 		wegnummer=wegnummer,
@@ -66,22 +69,12 @@ for i, melding in enumerate(meldingen):
 		details=details
 	)
 
-	s.add(newMelding)
+	q = s.query(Melding).filter_by(datum=today, tijd_van_melden=newMelding.tijd_van_melden)
+	exists = s.query(q.exists()).scalar()
+
+	if not exists:
+		s.add(newMelding)
+			
 	s.commit()
 
-	s.close()
-
-	# get all of today's meldingen
-
-	# if not already in db
-		# insert
-
-
-	# melding = str(melding)
-	# items[str(i)] = str(melding)
-
-	# if 'newMelding' in locals():
-	# 	export = open(FILENAME + ".json", "a+")
-	# 	dump(newMelding.__dict__, export, indent=4)
-	# 	export.close()
-	# 
+s.close()
