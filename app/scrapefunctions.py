@@ -54,4 +54,3 @@ def get_details(melding):
 	start = details.find('.') + 2
 	end = details.find('  ', start)
 	return details[start:end]
-	

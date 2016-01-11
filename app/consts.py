@@ -50,7 +50,7 @@ SNELWEG = {
 REGIONALE_WEG = {
 	'element': 'div',
 	'kenmerk': 'id',
-	'soort_weg': 'regionale_weg',
+	'soort_weg': 'nweg',
 	'wegnummer_id': 'nwegtekst',
 	'zijde_id': 'richting',
 	'hm_paal_id': 'hm'
