@@ -1,5 +1,7 @@
-from bs4 import BeautifulSoup
 import re
+from datetime import datetime
+
+from bs4 import BeautifulSoup
 
 from consts import \
 WEGNUMMER, \
@@ -10,6 +12,7 @@ TIJD, \
 DETAILS, \
 LINKS, \
 RECHTS, \
+BEIDE, \
 CONTROLE_TYPES
 
 
@@ -26,6 +29,8 @@ def get_zijde(melding, zijde_id):
 		return 'links'
 	elif richting == RECHTS:
 		return 'rechts'
+	elif richting == BEIDE:
+		return 'beide'
 
 
 def get_hm_paal(melding, hm_paal_id):
@@ -45,6 +50,7 @@ def get_type_controle(melding):
 def get_tijd(melding):
 	parentElement = melding.find(TIJD['element'], text=TIJD['kenmerk']).parent
 	tijd = parentElement.contents[2].strip()
+	tijd = datetime.strptime(tijd, '%H:%M:%S').time()
 	return tijd
 
 

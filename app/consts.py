@@ -6,8 +6,9 @@ LOCAL_URL = "file:///Users/simonprive/Dropbox/programming/projects/flitsers/app/
 MELDING_HTML_ELEMENT = 'div'
 MELDING_HTML = {'id':'bordzondersnelheid'}
 
-LINKS = 'li'
-RECHTS = 're'
+LINKS = 'Li'
+RECHTS = 'Re'
+BEIDE = '<>'
 
 CONTROLE_TYPES = ['Radar']
 

@@ -54,6 +54,8 @@ for i, melding in enumerate(meldingen):
 	tijd = get_tijd(melding)
 	details = get_details(melding)
 
+	s = db_session()
+
 	newMelding = Melding(
 		soort_weg=soort_weg,
 		wegnummer=wegnummer,
@@ -63,6 +65,11 @@ for i, melding in enumerate(meldingen):
 		tijd_van_melden=tijd,
 		details=details
 	)
+
+	s.add(newMelding)
+	s.commit()
+
+	s.close()
 
 	# get all of today's meldingen
 

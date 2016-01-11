@@ -1,6 +1,7 @@
 *.pyc
 *.json
 *.DS_Store
+*.db
 
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html
