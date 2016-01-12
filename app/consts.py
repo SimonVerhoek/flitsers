@@ -10,7 +10,7 @@ LINKS = 'Li'
 RECHTS = 'Re'
 BEIDE = '<>'
 
-CONTROLE_TYPES = ['Radar']
+CONTROLE_TYPES = ['Radar', 'Laser']
 
 # soorten info te scrapen
 WEGNUMMER = {
