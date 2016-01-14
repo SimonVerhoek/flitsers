@@ -17,6 +17,7 @@ class Melding(Base):
 	type_controle = Column(String, nullable=False)
 	tijd_van_melden = Column(Time, nullable=False)
 	details = Column(String)
+	laatste_activiteit = Column(Time)
 
 engine = create_engine('sqlite:///flitsers.db')
 

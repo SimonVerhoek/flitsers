@@ -23,11 +23,9 @@ today = datetime.today().strftime('%Y-%m-%d')
 soup = BeautifulSoup(urlopen(URL), "html.parser")
 meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
-items = {}
-
 s = db_session()
 
-for i, melding in enumerate(meldingen):
+for melding in meldingen:
 	# move to correct element level
 	melding = melding.parent
 	melding = melding.parent
@@ -69,12 +67,14 @@ for i, melding in enumerate(meldingen):
 		details=details
 	)
 
-	q = s.query(Melding).filter_by(datum=today, tijd_van_melden=newMelding.tijd_van_melden)
-	exists = s.query(q.exists()).scalar()
-
-	if not exists:
+	# if already in db, update laatste_activiteit
+	meldingSeenBefore = s.query(Melding).filter_by(datum=today, 
+												   wegnummer=wegnummer, 
+												   details=details).first()
+	if meldingSeenBefore:
+		meldingSeenBefore.laatste_activiteit = datetime.now().time()
+	else:
 		s.add(newMelding)
-			
 	s.commit()
 
 s.close()
