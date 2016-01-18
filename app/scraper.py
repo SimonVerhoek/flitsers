@@ -14,7 +14,8 @@ from scrapefunctions import \
 	get_hm_paal, \
 	get_type_controle, \
 	get_tijd, \
-	get_details
+	get_details, \
+	get_hm_paal_coordinates
 from consts import FILENAME, URL, LOCAL_URL
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 
@@ -66,6 +67,10 @@ for melding in meldingen:
 		tijd_van_melden=tijd,
 		details=details
 	)
+
+	coordinates = get_hm_paal_coordinates(melding=newMelding)
+	print coordinates
+
 
 	# if already in db, update laatste_activiteit
 	meldingSeenBefore = s.query(Melding).filter_by(datum=today, 

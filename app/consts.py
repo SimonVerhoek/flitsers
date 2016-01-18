@@ -61,3 +61,5 @@ WEGTYPES = [
 	SNELWEG,
 	REGIONALE_WEG
 ]
+
+HM_PAAL_URL = 'http://hmpaal.nl/hectometer/'

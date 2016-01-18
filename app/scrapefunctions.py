@@ -1,5 +1,7 @@
 import re
 from datetime import datetime
+from urllib2 import urlopen
+import random
 
 from bs4 import BeautifulSoup
 
@@ -13,7 +15,8 @@ DETAILS, \
 LINKS, \
 RECHTS, \
 BEIDE, \
-CONTROLE_TYPES
+CONTROLE_TYPES, \
+HM_PAAL_URL
 
 
 def get_wegnummer(melding, wegnummer_id):
@@ -36,6 +39,7 @@ def get_zijde(melding, zijde_id):
 def get_hm_paal(melding, hm_paal_id):
 	hm_paal = melding.find(HM_PAAL['element'], {HM_PAAL['kenmerk']:hm_paal_id}).text
 	hm_paal = hm_paal.strip()
+	hm_paal.replace('.', ',')
 	return hm_paal
 
 
@@ -60,3 +64,21 @@ def get_details(melding):
 	start = details.find('.') + 2
 	end = details.find('  ', start)
 	return details[start:end]
+
+
+def get_hm_paal_coordinates(melding):
+	if melding.zijde == LINKS:
+		zijde = 'L/'
+		hm_paal = zijde + melding.get_hm_paal
+	elif melding.zijde == RECHTS:
+		zijde = 'R/'
+		hm_paal = zijde + melding.get_hm_paal
+	else:
+		hm_paal = melding.hm_paal
+
+	url = HM_PAAL_URL + melding.wegnummer + '/' + hm_paal + '/'
+	soup = BeautifulSoup(urlopen(url), "html.parser")
+
+	coordinates = soup.find('div', {'class':'maps'}).a['href']
+	start = coordinates.find('=') + 1
+	return coordinates[start:]

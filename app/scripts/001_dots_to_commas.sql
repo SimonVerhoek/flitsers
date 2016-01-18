@@ -1,0 +1,1 @@
+UPDATE melding SET hm_paal = replace(hm_paal, '.', ',');

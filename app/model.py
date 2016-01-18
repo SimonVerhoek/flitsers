@@ -18,10 +18,11 @@ class Melding(Base):
 	tijd_van_melden = Column(Time, nullable=False)
 	details = Column(String)
 	laatste_activiteit = Column(Time)
+	locatie = Column(String)
 
 engine = create_engine('sqlite:///flitsers.db')
 
 # create db with above classes as tables
-Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)
 
 db_session = sessionmaker(bind=engine)
