@@ -16,7 +16,8 @@ LINKS, \
 RECHTS, \
 BEIDE, \
 CONTROLE_TYPES, \
-HM_PAAL_URL
+HM_PAAL_URL, \
+HM_PAAL_WEG_URL
 
 
 def get_wegnummer(melding, wegnummer_id):
@@ -69,16 +70,19 @@ def get_details(melding):
 def get_hm_paal_coordinates(melding):
 	if melding.zijde == LINKS:
 		zijde = 'L/'
-		hm_paal = zijde + melding.get_hm_paal
+		hm_paal = zijde + melding.hm_paal
 	elif melding.zijde == RECHTS:
 		zijde = 'R/'
-		hm_paal = zijde + melding.get_hm_paal
+		hm_paal = zijde + melding.hm_paal
 	else:
 		hm_paal = melding.hm_paal
 
 	url = HM_PAAL_URL + melding.wegnummer + '/' + hm_paal + '/'
-	soup = BeautifulSoup(urlopen(url), "html.parser")
+	print url
 
-	coordinates = soup.find('div', {'class':'maps'}).a['href']
-	start = coordinates.find('=') + 1
-	return coordinates[start:]
+	soup = BeautifulSoup(urlopen(url), 'html.parser')
+
+	if soup.find('div', {'class':'maps'}):		
+		coordinates = soup.find('div', {'class':'maps'}).a['href']
+		start = coordinates.find('=') + 1
+		return coordinates[start:]

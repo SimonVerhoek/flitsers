@@ -1,3 +1,6 @@
+"""
+FLITSER MELDINGEN
+"""
 FILENAME = "export"
 
 URL = "http://flits.flitsservice.nl/meldingen/vandaag.aspx"
@@ -62,4 +65,10 @@ WEGTYPES = [
 	REGIONALE_WEG
 ]
 
+
+"""
+LOCATIES HECTOMETERPALEN
+"""
 HM_PAAL_URL = 'http://hmpaal.nl/hectometer/'
+HM_PAAL_WEG_URL = 'http://hmpaal.nl/weg/'
+

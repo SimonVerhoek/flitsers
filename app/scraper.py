@@ -69,8 +69,7 @@ for melding in meldingen:
 	)
 
 	coordinates = get_hm_paal_coordinates(melding=newMelding)
-	print coordinates
-
+	newMelding.locatie = coordinates if coordinates else "onbekend"
 
 	# if already in db, update laatste_activiteit
 	meldingSeenBefore = s.query(Melding).filter_by(datum=today, 
