@@ -2,6 +2,7 @@
 *.json
 *.DS_Store
 *.db
+credentials.py
 
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html
