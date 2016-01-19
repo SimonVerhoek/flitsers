@@ -78,7 +78,6 @@ def get_hm_paal_coordinates(melding):
 		hm_paal = melding.hm_paal
 
 	url = HM_PAAL_URL + melding.wegnummer + '/' + hm_paal + '/'
-	print url
 
 	soup = BeautifulSoup(urlopen(url), 'html.parser')
 
