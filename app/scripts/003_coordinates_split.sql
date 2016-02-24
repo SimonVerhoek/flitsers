@@ -1,2 +1,2 @@
-ALTER TABLE melding ADD COLUMN locatie_lat INTEGER;
-ALTER TABLE melding ADD COLUMN locatie_lon INTEGER;
+ALTER TABLE melding ADD COLUMN locatie_lat REAL;
+ALTER TABLE melding ADD COLUMN locatie_lon REAL;
