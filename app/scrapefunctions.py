@@ -81,7 +81,13 @@ def get_hm_paal_coordinates(melding):
 
 	soup = BeautifulSoup(urlopen(url), 'html.parser')
 
-	if soup.find('div', {'class':'maps'}):		
+	if soup.find('div', {'class':'maps'}):
 		coordinates = soup.find('div', {'class':'maps'}).a['href']
 		start = coordinates.find('=') + 1
-		return coordinates[start:]
+		coordinates = coordinates[start:]
+
+		coordinateList = coordinates.split(',')
+		for coordinate in coordinateList:
+			coordinate = float(coordinate)
+
+		return coordinateList

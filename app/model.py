@@ -21,7 +21,8 @@ class Melding(Base):
 	details = Column(String)
 	laatste_activiteit = Column(Time)
 	locatie = Column(String)
-
+	locatie_lat = Column(Integer)
+	locatie_lon = Column(Integer)
 
 
 engine = create_engine('sqlite:///flitsers.db')
