@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
 	s = db_session()
-	data = s.query(Melding).limit(5).all()
+	data = s.query(Melding).limit(50).all()
 
 	flitsers = []
 	

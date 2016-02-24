@@ -4,28 +4,17 @@
 	<div id="map-canvas"></div>
 </div>
 
-<script type="text/javascript">
-	/* Data points defined as an array of LatLng objects */
-	var heatmapData = [
-	  new google.maps.LatLng(37.782, -122.447),
-	  new google.maps.LatLng(37.782, -122.445),
-	  new google.maps.LatLng(37.782, -122.443),
-	  new google.maps.LatLng(37.782, -122.441),
-	  new google.maps.LatLng(37.782, -122.439),
-	  new google.maps.LatLng(37.782, -122.437),
-	  new google.maps.LatLng(37.782, -122.435),
-	  new google.maps.LatLng(37.785, -122.447),
-	  new google.maps.LatLng(37.785, -122.445),
-	  new google.maps.LatLng(37.785, -122.443),
-	  new google.maps.LatLng(37.785, -122.441),
-	  new google.maps.LatLng(37.785, -122.439),
-	  new google.maps.LatLng(37.785, -122.437),
-	  new google.maps.LatLng(37.785, -122.435)
-	];
+<script type="text/javascript">	
+	var heatmapData = [];
+	var flitsers = {{ flitsers|tojson }};
 
-	// var flitsers = JSON.parse('{{ flitsers }}')
-	var flitsers = {{ flitsers|tojson }}
-	console.log(flitsers);
+	for (var i = 0; i < flitsers.length; i++) {
+		var flitser = new google.maps.LatLng(
+			flitsers[i].locatie_lat, 
+			flitsers[i].locatie_lon
+		);
+		heatmapData.push(flitser);
+	}
 
 	var Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
 
