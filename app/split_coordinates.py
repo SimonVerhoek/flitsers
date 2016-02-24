@@ -3,11 +3,13 @@ from model import Melding
 
 s = db_session()
 
-meldingen = s.query(Melding).limit(5).all()
+meldingen = s.query(Melding).all()
 
 for melding in meldingen:
-	coordinates = melding.locatie.split(',')
-	print coordinates
+	if melding.locatie != 'onbekend':
+		coordinates = melding.locatie.split(',')
+		melding.locatie_lat = float(coordinates[0])
+		melding.locatie_lon = float(coordinates[1])
+		s.commit()
 
-
-print meldingen
+s.close()
