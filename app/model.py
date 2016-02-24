@@ -3,8 +3,10 @@ from sqlalchemy import Column, Integer, String, Date, Time, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from flask.ext.jsontools import JsonSerializableBase
 
-Base = declarative_base()
+Base = declarative_base(cls=(JsonSerializableBase,))
+
 
 class Melding(Base):
 	__tablename__ = 'melding'
@@ -19,6 +21,8 @@ class Melding(Base):
 	details = Column(String)
 	laatste_activiteit = Column(Time)
 	locatie = Column(String)
+
+
 
 engine = create_engine('sqlite:///flitsers.db')
 

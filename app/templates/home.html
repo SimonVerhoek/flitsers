@@ -23,6 +23,10 @@
 	  new google.maps.LatLng(37.785, -122.435)
 	];
 
+	// var flitsers = JSON.parse('{{ flitsers }}')
+	var flitsers = {{ flitsers|tojson }}
+	console.log(flitsers);
+
 	var Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
 
 	map = new google.maps.Map(document.getElementById('map'), {
