@@ -24,8 +24,6 @@ today = datetime.today().strftime('%Y-%m-%d')
 soup = BeautifulSoup(urlopen(URL), "html.parser")
 meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
-print meldingen
-
 s = db_session()
 
 for melding in meldingen:
