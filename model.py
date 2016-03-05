@@ -19,7 +19,7 @@ class Melding(Base):
 	soort_weg = Column(String, nullable=False)
 	wegnummer = Column(String, nullable=False)
 	zijde = Column(String, nullable=False)
-	hm_paal = Column(Float, nullable=False)
+	hm_paal = Column(String, nullable=False)
 	type_controle = Column(String, nullable=False)
 	tijd_van_melden = Column(Time, nullable=False)
 	details = Column(String)
