@@ -1,13 +1,9 @@
 from urllib2 import urlopen
 from datetime import datetime
+from json import dump
 
 from bs4 import BeautifulSoup
-from sqlalchemy import *
-from json import dump
-import sqlite3
-
-from model import db_session
-from model import Melding
+from model import *
 from scrapefunctions import \
 	get_zijde, \
 	get_wegnummer, \
@@ -24,7 +20,6 @@ today = datetime.today().strftime('%Y-%m-%d')
 soup = BeautifulSoup(urlopen(URL), "html.parser")
 meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
-s = db_session()
 
 for melding in meldingen:
 	# move to correct element level
@@ -76,13 +71,11 @@ for melding in meldingen:
 
 
 	# if already in db, update laatste_activiteit
-	meldingSeenBefore = s.query(Melding).filter_by(datum=today, 
-												   wegnummer=wegnummer, 
-												   details=details).first()
+	meldingSeenBefore = Melding.query.filter_by(datum=today,
+												wegnummer=wegnummer, 
+												details=details).first()
 	if meldingSeenBefore:
 		meldingSeenBefore.laatste_activiteit = datetime.now().time()
 	else:
-		s.add(newMelding)
-	s.commit()
-
-s.close()
+		db.session.add(newMelding)
+	db.session.commit()
