@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
-from flask.ext.heroku import heroku
+from flask.ext.heroku import Heroku
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
