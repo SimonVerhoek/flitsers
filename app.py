@@ -6,7 +6,7 @@ from flask import render_template
 from model import *
 
 # executes scraper
-import scraper
+# import scraper
 
 
 meldingen_schema = MeldingSchema(many=True)
