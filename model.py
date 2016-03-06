@@ -3,11 +3,11 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
-
+from flask.ext.heroku import heroku
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/flitsers'
 db = SQLAlchemy(app)
+heroku = Heroku(app)
 
 
 """ MODELS """
