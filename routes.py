@@ -6,7 +6,7 @@ from flask.ext.heroku import Heroku
 
 from model import *
 
-melding_schema = MeldingSchema()
+
 meldingen_schema = MeldingSchema(many=True)
 
 
@@ -14,7 +14,9 @@ meldingen_schema = MeldingSchema(many=True)
 def home():
 	data = Melding.query.all()
 	flitsers = meldingen_schema.dump(data)
-	return render_template('home.html', flitsers=flitsers)
+	
+	# [0] for sending without metadata like 'errors'
+	return render_template('home.html', flitsers=flitsers[0])
 
  
 if __name__ == '__main__':

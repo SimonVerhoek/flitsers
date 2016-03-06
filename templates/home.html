@@ -6,7 +6,7 @@
 
 <script type="text/javascript">	
 	var heatmapData = [];
-	var flitsers = {{ flitsers|tojson }}[0];
+	var flitsers = {{ flitsers|tojson }};
 
 	for (var i = 0; i < flitsers.length; i++) {
 		var flitser = new google.maps.LatLng(
