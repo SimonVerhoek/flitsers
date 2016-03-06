@@ -2,7 +2,6 @@ import datetime
 from json import dumps
 
 from flask import render_template
-from flask.ext.heroku import Heroku
 
 from model import *
 
@@ -23,5 +22,5 @@ def home():
 
  
 if __name__ == '__main__':
-	# app.debug = True
+	app.debug = True
 	app.run()
