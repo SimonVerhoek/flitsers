@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask.ext.jsontools import JsonSerializableBase
 
-from credentials import SQLALCHEMY_DATABASE_URI
+# from credentials import SQLALCHEMY_DATABASE_URI
 
 
 Base = declarative_base(cls=(JsonSerializableBase,))
@@ -28,7 +28,7 @@ class Melding(Base):
 	locatie_lon = Column(Float)
 
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI)
+engine = create_engine(DATABASE_URL)
 
 # create db with above classes as tables
 #Base.metadata.create_all(engine)
