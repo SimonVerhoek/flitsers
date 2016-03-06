@@ -1,7 +1,14 @@
 *.pyc
 *.json
 *.DS_Store
+
+# databases & dumps
 *.db
+*.dmp
+*.dump
+*.sql
+
+# credentials
 credentials.py
 
 # voorbeeldwebsite

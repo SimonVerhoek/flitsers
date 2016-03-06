@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/flitsers'
 db = SQLAlchemy(app)
 
-
+""" MODELS """
 class Melding(db.Model):
 	__tablename__ = 'melding'
 	id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -26,7 +26,7 @@ class Melding(db.Model):
 	locatie_lon = db.Column(db.Float)
 
 
-# JSON-serializable version
+""" SCHEMAS (for JSON-serialization) """
 class MeldingSchema(Schema):
 	id = fields.Integer()
 	datum = fields.Date()
