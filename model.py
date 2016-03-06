@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
 from flask.ext.heroku import Heroku
 
+from credentials import SQLALCHEMY_DATABASE_URI
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
