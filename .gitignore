@@ -6,7 +6,6 @@
 *.db
 *.dmp
 *.dump
-*.sql
 
 # credentials
 #credentials.py

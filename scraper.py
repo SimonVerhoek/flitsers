@@ -84,6 +84,7 @@ def scrape_flitsers():
 			else:
 				db.session.add(newMelding)
 			db.session.commit()
+		print 'scraping succeeded at {}'.format(datetime.today())
 	except:
 		print 'scraping failed at {}'.format(datetime.today())
 
