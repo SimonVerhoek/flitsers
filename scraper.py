@@ -26,6 +26,7 @@ def scrape_flitsers():
 		soup = BeautifulSoup(urlopen(URL), "html.parser")
 		meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
+		new_meldingen = 0
 
 		for melding in meldingen:
 			# move to correct element level
@@ -83,14 +84,10 @@ def scrape_flitsers():
 				meldingSeenBefore.laatste_activiteit = datetime.now().time()
 			else:
 				db.session.add(newMelding)
+				new_meldingen += 1
 			db.session.commit()
-		print 'scraping succeeded at {}'.format(datetime.today())
+		print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
 	except:
 		print 'scraping failed at {}'.format(datetime.today())
 
-
-schedule.every(5).minutes.do(scrape_flitsers)
-
-while True:
-	schedule.run_pending()
-	time.sleep(1)
+scrape_flitsers()
