@@ -5,6 +5,7 @@ import time
 
 from bs4 import BeautifulSoup
 import schedule
+import logging
 
 from model import *
 from scrapefunctions import \
@@ -87,7 +88,9 @@ def scrape_flitsers():
 				new_meldingen += 1
 			db.session.commit()
 		print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
+		logging.info('scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen))
 	except:
 		print 'scraping failed at {}'.format(datetime.today())
+		logging.warning('scraping failed at {}'.format(datetime.today()))
 
 scrape_flitsers()
