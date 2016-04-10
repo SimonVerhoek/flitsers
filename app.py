@@ -18,7 +18,7 @@ def home():
 	flitsers = meldingen_schema.dump(data)
 
 	# [0] for sending without metadata like 'errors'
-	return render_template('home.html', flitsers=flitsers[0])
+	return render_template('content.html', flitsers=flitsers[0])
 
  
 if __name__ == '__main__':

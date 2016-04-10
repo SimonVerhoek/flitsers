@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+{% block content %}
+<script type="text/javascript">
+	var flitsers = {{ flitsers|tojson }};
+</script>
+
+<div class="col-md-8 col-sm-12">
+	<div id="map">
+		<div id="map-canvas"></div>
+	</div>
+</div>
+
+{% endblock %}
