@@ -10,4 +10,16 @@
 	</div>
 </div>
 
+<div class="col-md-4 col-sm-12">
+  <table class="table">
+    <tr>
+      <td>Aantal gemeten flitsers</td>
+      <td>{{ data|length }}</td>
+    </tr>
+    <tr>
+      <td>Gemeten sinds:</td>
+      <td>{{ first_flitser.datum }}</td>
+    </tr>
+  </table>
+</div>
 {% endblock %}

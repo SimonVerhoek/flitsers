@@ -14,11 +14,19 @@ meldingen_schema = MeldingSchema(many=True)
 
 @app.route('/')
 def home():
-	data = Melding.query.all()
+	q = Melding.query
+	data = q.all()
 	flitsers = meldingen_schema.dump(data)
 
+	first_flitser = q.order_by(Melding.datum).first()
+
 	# [0] for sending without metadata like 'errors'
-	return render_template('content.html', flitsers=flitsers[0])
+	return render_template(
+		'content.html', 
+		data=data, 
+		first_flitser=first_flitser,
+		flitsers=flitsers[0]
+	)
 
  
 if __name__ == '__main__':
