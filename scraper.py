@@ -1,3 +1,4 @@
+import urllib2
 from urllib2 import urlopen
 from datetime import datetime
 from json import dump
@@ -7,90 +8,114 @@ from bs4 import BeautifulSoup
 import schedule
 import logging
 
+import socks
+import socket
+
 from model import *
 from scrapefunctions import \
-	get_zijde, \
-	get_wegnummer, \
-	get_hm_paal, \
-	get_type_controle, \
-	get_tijd, \
-	get_details, \
-	get_hm_paal_coordinates
+    get_zijde, \
+    get_wegnummer, \
+    get_hm_paal, \
+    get_type_controle, \
+    get_tijd, \
+    get_details, \
+    get_hm_paal_coordinates
 from consts import FILENAME, URL, LOCAL_URL
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 
 
 def scrape_flitsers():
-	today = datetime.today().strftime('%Y-%m-%d')
+    today = datetime.today().strftime('%Y-%m-%d')
 
-	try:
-		soup = BeautifulSoup(urlopen(URL), "html.parser")
-		meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
+    # setup Tor
+    socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
+    socket.socket = socks.socksocket
 
-		new_meldingen = 0
+    # try:
+    hdr = {
+    "User-Agent": "Mozilla/5.0",
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    }
+    req = urllib2.Request(URL, headers=hdr)
 
-		for melding in meldingen:
-			# move to correct element level
-			melding = melding.parent
-			melding = melding.parent
+    # html = urlopen(req)
 
-			# identify road type
-			snelweg = melding.find(
-				SNELWEG['element'], 
-				{SNELWEG['kenmerk']:SNELWEG['soort_weg']}
-			)
-			regionale_weg = melding.find(
-				REGIONALE_WEG['element'], 
-				{REGIONALE_WEG['kenmerk']:REGIONALE_WEG['soort_weg']}
-			)
+    try:
+      page = urlopen(req)
+    except urllib2.HTTPError, e:
+      print e.fp.read()
 
-			if snelweg:
-				soort_weg = SNELWEG['soort_weg']
-				wegnummer = get_wegnummer(melding=melding, wegnummer_id=SNELWEG['wegnummer_id'])
-				zijde = get_zijde(melding=melding, zijde_id=SNELWEG['zijde_id'])
-				hm_paal = get_hm_paal(melding=melding, hm_paal_id=SNELWEG['hm_paal_id'])
-			elif regionale_weg:
-				soort_weg = REGIONALE_WEG['soort_weg']
-				wegnummer = get_wegnummer(melding=melding, wegnummer_id=REGIONALE_WEG['wegnummer_id'])
-				zijde = get_zijde(melding=melding, zijde_id=REGIONALE_WEG['zijde_id'])
-				hm_paal = get_hm_paal(melding=melding, hm_paal_id=REGIONALE_WEG['hm_paal_id'])
-			else:
-				pass
 
-			type_controle = get_type_controle(melding)
-			tijd = get_tijd(melding)
-			details = get_details(melding)
+    soup = BeautifulSoup(page, "html.parser")
+    meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
-			newMelding = Melding(
-				soort_weg=soort_weg,
-				wegnummer=wegnummer,
-				zijde=zijde,
-				hm_paal=hm_paal,
-				type_controle=type_controle,
-				tijd_van_melden=tijd,
-				details=details
-			)
+    new_meldingen = 0
 
-			coordinates = get_hm_paal_coordinates(melding=newMelding)
-			if coordinates:
-				newMelding.locatie = ','.join(coordinates)
-				newMelding.locatie_lat = coordinates[0]
-				newMelding.locatie_lon = coordinates[1]
+    for melding in meldingen:
+        # move to correct element level
+        melding = melding.parent
+        melding = melding.parent
 
-			# if already in db, update laatste_activiteit
-			meldingSeenBefore = Melding.query.filter_by(datum=today,
-														wegnummer=wegnummer, 
-														details=details).first()
-			if meldingSeenBefore:
-				meldingSeenBefore.laatste_activiteit = datetime.now().time()
-			else:
-				db.session.add(newMelding)
-				new_meldingen += 1
-			db.session.commit()
-		print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
-		logging.info('scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen))
-	except:
-		print 'scraping failed at {}'.format(datetime.today())
-		logging.warning('scraping failed at {}'.format(datetime.today()))
+        # identify road type
+        snelweg = melding.find(
+            SNELWEG['element'], 
+            {SNELWEG['kenmerk']:SNELWEG['soort_weg']}
+        )
+        regionale_weg = melding.find(
+            REGIONALE_WEG['element'], 
+            {REGIONALE_WEG['kenmerk']:REGIONALE_WEG['soort_weg']}
+        )
+
+        if snelweg:
+            soort_weg = SNELWEG['soort_weg']
+            wegnummer = get_wegnummer(melding=melding, wegnummer_id=SNELWEG['wegnummer_id'])
+            zijde = get_zijde(melding=melding, zijde_id=SNELWEG['zijde_id'])
+            hm_paal = get_hm_paal(melding=melding, hm_paal_id=SNELWEG['hm_paal_id'])
+        elif regionale_weg:
+            soort_weg = REGIONALE_WEG['soort_weg']
+            wegnummer = get_wegnummer(melding=melding, wegnummer_id=REGIONALE_WEG['wegnummer_id'])
+            zijde = get_zijde(melding=melding, zijde_id=REGIONALE_WEG['zijde_id'])
+            hm_paal = get_hm_paal(melding=melding, hm_paal_id=REGIONALE_WEG['hm_paal_id'])
+        else:
+            pass
+
+    type_controle = get_type_controle(melding)
+    tijd = get_tijd(melding)
+    details = get_details(melding)
+
+    newMelding = Melding(
+        soort_weg=soort_weg,
+        wegnummer=wegnummer,
+        zijde=zijde,
+        hm_paal=hm_paal,
+        type_controle=type_controle,
+        tijd_van_melden=tijd,
+        details=details
+    )
+
+    coordinates = get_hm_paal_coordinates(melding=newMelding)
+    if coordinates:
+        newMelding.locatie = ','.join(coordinates)
+        newMelding.locatie_lat = coordinates[0]
+        newMelding.locatie_lon = coordinates[1]
+
+    # if already in db, update laatste_activiteit
+    meldingSeenBefore = Melding.query.filter_by(
+        datum=today,
+        wegnummer=wegnummer, 
+        details=details
+    ).first()
+    if meldingSeenBefore:
+        meldingSeenBefore.laatste_activiteit = datetime.now().time()
+    else:
+        db.session.add(newMelding)
+        new_meldingen += 1
+    db.session.commit()
+
+    print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
+    logging.info('scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen))
+    # except:
+    #   print 'scraping failed at {}'.format(datetime.today())
+    #   logging.warning('scraping failed at {}'.format(datetime.today()))
 
 scrape_flitsers()
