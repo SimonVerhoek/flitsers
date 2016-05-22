@@ -82,8 +82,24 @@ def get_hm_paal_coordinates(melding):
 
     url = HM_PAAL_URL + melding.wegnummer + '/' + hm_paal + '/'
 
-    # soup = BeautifulSoup(urlopen(url), 'html.parser')
+    page = get_hm_paal_page(url)
+    soup = BeautifulSoup(page, "html.parser")
 
+    coordinateList = None
+
+    if soup.find('div', {'class': 'maps'}):
+        coordinates = soup.find('div', {'class': 'maps'}).a['href']
+        start = coordinates.find('=') + 1
+        coordinates = coordinates[start:]
+
+        coordinateList = coordinates.split(',')
+        for coordinate in coordinateList:
+            coordinate = float(coordinate)
+
+    return coordinateList
+
+
+def get_hm_paal_page(url):
     # setup Tor
     socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
     socket.socket = socks.socksocket
@@ -96,19 +112,6 @@ def get_hm_paal_coordinates(melding):
 
     try:
         page = urlopen(req)
+        return page
     except urllib2.HTTPError, e:
         print e.fp.read()
-
-    soup = BeautifulSoup(page, "html.parser")
-    coordinateList = []
-
-    if soup.find('div', {'class': 'maps'}):
-        coordinates = soup.find('div', {'class': 'maps'}).a['href']
-        start = coordinates.find('=') + 1
-        coordinates = coordinates[start:]
-
-        coordinateList = coordinates.split(',')
-        for coordinate in coordinateList:
-            coordinate = float(coordinate)
-
-    return coordinateList
