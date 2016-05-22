@@ -9,9 +9,6 @@ from bs4 import BeautifulSoup
 import schedule
 import logging
 
-import socks
-import socket
-
 from model import *
 from scrapefunctions import \
     get_zijde, \
@@ -27,10 +24,6 @@ from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 
 def scrape_flitsers():
     today = datetime.today().strftime('%Y-%m-%d')
-
-    # # setup Tor
-    # socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
-    # socket.socket = socks.socksocket
 
     hdr = {
         "User-Agent": "Mozilla/5.0",

@@ -5,6 +5,8 @@ from urllib2 import urlopen
 import random
 
 from bs4 import BeautifulSoup
+import socks
+import socket
 
 from consts import \
     WEGNUMMER, \
@@ -82,6 +84,10 @@ def get_hm_paal_coordinates(melding):
 
     # soup = BeautifulSoup(urlopen(url), 'html.parser')
 
+    # setup Tor
+    socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
+    socket.socket = socks.socksocket
+
     hdr = {
         "User-Agent": "Mozilla/5.0",
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -94,6 +100,7 @@ def get_hm_paal_coordinates(melding):
         print e.fp.read()
 
     soup = BeautifulSoup(page, "html.parser")
+    coordinateList = []
 
     if soup.find('div', {'class': 'maps'}):
         coordinates = soup.find('div', {'class': 'maps'}).a['href']

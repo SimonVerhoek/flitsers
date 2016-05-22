@@ -4,21 +4,19 @@ older db entries.
 """
 from sqlalchemy import *
 
-from model import db_session, Melding
+from model import db, Melding
 from scrapefunctions import get_hm_paal_coordinates
 
 
-s = db_session()
+meldingWithoutCoordinates = Melding.query.filter(
+    Melding.locatie == None
+).all()
 
-meldingWithoutCoordinates = s.query(Melding).filter(
-		Melding.locatie == None
-	).all()
+print meldingWithoutCoordinates
 
 for melding in meldingWithoutCoordinates:
-	coordinates = get_hm_paal_coordinates(melding=melding)
-	melding.locatie = coordinates if coordinates else "onbekend"
-	melding.locatie
+    coordinates = get_hm_paal_coordinates(melding=melding)
+    melding.locatie = coordinates if coordinates else "onbekend"
+    melding.locatie
 
-	s.commit()
-
-s.close()
+    db.session.commit()
