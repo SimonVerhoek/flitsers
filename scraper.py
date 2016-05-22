@@ -33,18 +33,17 @@ def scrape_flitsers():
 
     # try:
     hdr = {
-    "User-Agent": "Mozilla/5.0",
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        "User-Agent": "Mozilla/5.0",
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
     req = urllib2.Request(URL, headers=hdr)
 
     # html = urlopen(req)
 
     try:
-      page = urlopen(req)
+        page = urlopen(req)
     except urllib2.HTTPError, e:
-      print e.fp.read()
-
+        print e.fp.read()
 
     soup = BeautifulSoup(page, "html.parser")
     meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
@@ -58,12 +57,12 @@ def scrape_flitsers():
 
         # identify road type
         snelweg = melding.find(
-            SNELWEG['element'], 
-            {SNELWEG['kenmerk']:SNELWEG['soort_weg']}
+            SNELWEG['element'],
+            {SNELWEG['kenmerk']: SNELWEG['soort_weg']}
         )
         regionale_weg = melding.find(
-            REGIONALE_WEG['element'], 
-            {REGIONALE_WEG['kenmerk']:REGIONALE_WEG['soort_weg']}
+            REGIONALE_WEG['element'],
+            {REGIONALE_WEG['kenmerk']: REGIONALE_WEG['soort_weg']}
         )
 
         if snelweg:
@@ -102,7 +101,7 @@ def scrape_flitsers():
     # if already in db, update laatste_activiteit
     meldingSeenBefore = Melding.query.filter_by(
         datum=today,
-        wegnummer=wegnummer, 
+        wegnummer=wegnummer,
         details=details
     ).first()
     if meldingSeenBefore:
