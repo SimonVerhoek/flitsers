@@ -27,15 +27,18 @@ from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 def scrape_flitsers():
     today = datetime.today().strftime('%Y-%m-%d')
 
-    # # setup Tor
-    # socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
-    # socket.socket = socks.socksocket
+    # setup Tor
+    socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
+    socket.socket = socks.socksocket
 
+    # try:
     hdr = {
         "User-Agent": "Mozilla/5.0",
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
     req = urllib2.Request(URL, headers=hdr)
+
+    # html = urlopen(req)
 
     try:
         page = urlopen(req)
@@ -108,10 +111,10 @@ def scrape_flitsers():
         new_meldingen += 1
     db.session.commit()
 
-    try:
-        print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
-    except:
-        print 'scraping failed at {}'.format(datetime.today())
-        logging.warning('scraping failed at {}'.format(datetime.today()))
+    print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
+    logging.info('scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen))
+    # except:
+    #   print 'scraping failed at {}'.format(datetime.today())
+    #   logging.warning('scraping failed at {}'.format(datetime.today()))
 
 scrape_flitsers()
