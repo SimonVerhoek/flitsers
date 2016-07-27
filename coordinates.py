@@ -14,9 +14,9 @@ def get_missing_coordinates():
     for melding in melding_without_coordinates:
         coordinates = get_hm_paal_coordinates(melding=melding)
         melding.locatie = coordinates if coordinates else "onbekend"
-        if coordinates != 'onbekend':
+        if coordinates and coordinates != 'onbekend':
             melding.locatie_lat = coordinates[0]
-            melding.locatie_len = coordinates[1]
+            melding.locatie_lon = coordinates[1]
 
         db.session.commit()
 
@@ -26,8 +26,6 @@ def retry_unknown_coordinates():
 
     for melding in melding_with_unknown_coordinates:
         coordinates = get_hm_paal_coordinates(melding=melding)
-
-        print coordinates
 
         melding.locatie = coordinates if coordinates else "onbekend"
 
@@ -48,4 +46,4 @@ def retry_wrong_coordinates():
         db.session.commit()
 
 
-retry_wrong_coordinates()
+get_missing_coordinates()
