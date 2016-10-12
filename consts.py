@@ -3,9 +3,6 @@ FLITSER MELDINGEN
 """
 FILENAME = "export"
 
-URL = "http://flits.flitsservice.nl/meldingen/vandaag.aspx"
-LOCAL_URL = "file:///Users/simonprive/Dropbox/programming/projects/flitsers/app/flitsservice_voorbeeld.html"
-
 MELDING_HTML_ELEMENT = 'div'
 MELDING_HTML = {'id':'bordzondersnelheid'}
 

@@ -4,6 +4,7 @@ from urllib2 import urlopen
 from datetime import datetime
 from json import dump
 import time
+import os
 
 from bs4 import BeautifulSoup
 import schedule
@@ -18,7 +19,7 @@ from scrapefunctions import \
     get_tijd, \
     get_details, \
     get_hm_paal_coordinates
-from consts import FILENAME, URL, LOCAL_URL
+from consts import FILENAME
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 
 
@@ -29,7 +30,7 @@ def scrape_flitsers():
         "User-Agent": "Mozilla/5.0",
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
-    req = urllib2.Request(URL, headers=hdr)
+    req = urllib2.Request(os.environ['SCRAPE_URL'], headers=hdr)
 
     try:
         page = urlopen(req)
