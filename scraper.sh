@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+source $HOME/.bash_profile
 
 # local development
 # echo 'Starting Tor...'
@@ -15,12 +16,5 @@ set -e
 
 
 # production
-echo 'Starting Tor...'
-sudo service tor start
-sleep 10
-
 echo 'Starting scraper...'
-python scraper.py
-
-echo 'Killing Tor...'
-sudo service tor stop
+python ~/flitsers/scraper.py
