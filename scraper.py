@@ -85,11 +85,11 @@ def scrape_flitsers():
             details=details
         )
 
-        # coordinates = get_hm_paal_coordinates(melding=newMelding)
-        # if coordinates:
-        #     newMelding.locatie = ','.join(coordinates)
-        #     newMelding.locatie_lat = coordinates[0]
-        #     newMelding.locatie_lon = coordinates[1]
+        coordinates = get_hm_paal_coordinates(melding=newMelding)
+        if coordinates:
+            newMelding.locatie = ','.join(coordinates)
+            newMelding.locatie_lat = coordinates[0]
+            newMelding.locatie_lon = coordinates[1]
 
         # if already in db, update laatste_activiteit
         meldingSeenBefore = Melding.query.filter_by(
@@ -109,4 +109,6 @@ def scrape_flitsers():
         print 'scraping failed at {}'.format(datetime.today())
         logging.warning('scraping failed at {}'.format(datetime.today()))
 
-scrape_flitsers()
+
+if __name__ == '__main__':
+    scrape_flitsers()
