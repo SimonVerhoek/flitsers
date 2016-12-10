@@ -71,38 +71,38 @@ def scrape_flitsers():
             else:
                 pass
 
-        type_controle = get_type_controle(melding)
-        tijd = get_tijd(melding)
-        details = get_details(melding)
+            type_controle = get_type_controle(melding)
+            tijd = get_tijd(melding)
+            details = get_details(melding)
 
-        newMelding = Melding(
-            soort_weg=soort_weg,
-            wegnummer=wegnummer,
-            zijde=zijde,
-            hm_paal=hm_paal,
-            type_controle=type_controle,
-            tijd_van_melden=tijd,
-            details=details
-        )
+            newMelding = Melding(
+                soort_weg=soort_weg,
+                wegnummer=wegnummer,
+                zijde=zijde,
+                hm_paal=hm_paal,
+                type_controle=type_controle,
+                tijd_van_melden=tijd,
+                details=details
+            )
 
-        coordinates = get_hm_paal_coordinates(melding=newMelding)
-        if coordinates:
-            newMelding.locatie = ','.join(coordinates)
-            newMelding.locatie_lat = coordinates[0]
-            newMelding.locatie_lon = coordinates[1]
+            coordinates = get_hm_paal_coordinates(melding=newMelding)
+            if coordinates:
+                newMelding.locatie = ','.join(coordinates)
+                newMelding.locatie_lat = coordinates[0]
+                newMelding.locatie_lon = coordinates[1]
 
-        # if already in db, update laatste_activiteit
-        meldingSeenBefore = Melding.query.filter_by(
-            datum=today,
-            wegnummer=wegnummer,
-            details=details
-        ).first()
-        if meldingSeenBefore:
-            meldingSeenBefore.laatste_activiteit = datetime.now().time()
-        else:
-            db.session.add(newMelding)
-            new_meldingen += 1
-        db.session.commit()
+            # if already in db, update laatste_activiteit
+            meldingSeenBefore = Melding.query.filter_by(
+                datum=today,
+                wegnummer=wegnummer,
+                details=details
+            ).first()
+            if meldingSeenBefore:
+                meldingSeenBefore.laatste_activiteit = datetime.now().time()
+            else:
+                db.session.add(newMelding)
+                new_meldingen += 1
+            db.session.commit()
 
         print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
     except:
