@@ -33,6 +33,14 @@ class Melding(db.Model):
     locatie_lon = db.Column(db.Float)
 
 
+class Town(db.Model):
+    __tablename__ = 'town'
+    code = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    municipality = db.Column(db.String)
+    province = db.Column(db.String)
+
+
 """ SCHEMAS (for JSON-serialization) """
 class MeldingSchema(Schema):
     id = fields.Integer()

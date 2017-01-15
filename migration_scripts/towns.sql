@@ -1,0 +1,6 @@
+CREATE TABLE town (
+	code VARCHAR NOT NULL PRIMARY KEY,
+	name VARCHAR NOT NULL,
+	municipality VARCHAR NOT NULL,
+	province VARCHAR NOT NULL
+)
