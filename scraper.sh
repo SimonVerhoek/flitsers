@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-source $HOME/.bash_profile
+source $HOME/.profile
 
 # local development
 # echo 'Starting Tor...'
@@ -17,4 +17,5 @@ source $HOME/.bash_profile
 
 # production
 echo 'Starting scraper...'
+source ~/.virtualenvs/flitserdata/bin/activate
 python ~/flitsers/scraper.py

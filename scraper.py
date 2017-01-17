@@ -21,6 +21,7 @@ from scrapefunctions import \
     get_hm_paal_coordinates
 from consts import FILENAME
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
+from credentials import SCRAPE_URL
 
 
 def scrape_flitsers():
@@ -30,7 +31,7 @@ def scrape_flitsers():
         "User-Agent": "Mozilla/5.0",
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
-    req = urllib2.Request(os.environ['SCRAPE_URL'], headers=hdr)
+    req = urllib2.Request(SCRAPE_URL, headers=hdr)
 
     try:
         page = urlopen(req)
