@@ -6,9 +6,10 @@ from bs4 import BeautifulSoup
 from model import db, Town
 
 
-
-
 def scrape_town_names():
+    """
+    Retrieves a list of Dutch towns.
+    """
     hdr = {
         "User-Agent": "Mozilla/5.0",
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -36,8 +37,6 @@ def scrape_town_names():
         )
         db.session.add(town)
         db.session.commit()
-
-    
 
 if __name__ == '__main__':
     scrape_town_names()
