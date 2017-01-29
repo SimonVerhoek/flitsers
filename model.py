@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
-from flask.ext.heroku import Heroku
 
 from credentials import DATABASE_URL
 from consts import ZONNESTANDEN
@@ -13,7 +12,6 @@ from consts import ZONNESTANDEN
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db = SQLAlchemy(app)
-heroku = Heroku(app)
 
 
 """ MODELS """
