@@ -1,10 +1,10 @@
 #!/usr/bin/python
+import time
+import os
 import urllib2
 from urllib2 import urlopen
 from datetime import datetime
 from json import dump
-import time
-import os
 
 from bs4 import BeautifulSoup
 import schedule
@@ -18,7 +18,8 @@ from scrapefunctions import \
     get_type_controle, \
     get_tijd, \
     get_details, \
-    get_hm_paal_coordinates
+    get_hm_paal_coordinates, \
+    get_weather
 from consts import FILENAME
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 from credentials import SCRAPE_URL
@@ -38,7 +39,7 @@ def scrape_flitsers():
     except urllib2.HTTPError, e:
         print e.fp.read()
 
-    try:
+    try: 
         soup = BeautifulSoup(page, "html.parser")
         meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
@@ -86,12 +87,6 @@ def scrape_flitsers():
                 details=details
             )
 
-            coordinates = get_hm_paal_coordinates(melding=newMelding)
-            if coordinates:
-                newMelding.locatie = ','.join(coordinates)
-                newMelding.locatie_lat = coordinates[0]
-                newMelding.locatie_lon = coordinates[1]
-
             # if already in db, update laatste_activiteit
             meldingSeenBefore = Melding.query.filter_by(
                 datum=today,
@@ -101,6 +96,33 @@ def scrape_flitsers():
             if meldingSeenBefore:
                 meldingSeenBefore.laatste_activiteit = datetime.now().time()
             else:
+                coordinates = get_hm_paal_coordinates(melding=newMelding)
+                if coordinates:
+                    newMelding.locatie = ','.join(coordinates)
+                    newMelding.locatie_lat = coordinates[0]
+                    newMelding.locatie_lon = coordinates[1]
+
+                    weather = get_weather(
+                        lat=coordinates[0], 
+                        lon=coordinates[1], 
+                        time_unix=int(time.time())
+                    )
+
+                    newMelding.weer_type = weather['type']
+                    newMelding.weer_beschrijving = weather['beschrijving']
+                    newMelding.weer_temp = weather['temp']
+                    newMelding.weer_temp_max = weather['temp_max']
+                    newMelding.weer_temp_min = weather['temp_min']
+                    newMelding.weer_luchtdruk_hpa = weather['luchtdruk_hpa']
+                    newMelding.weer_luchtvochtigheid_procent = weather['luchtvochtigheid_procent']
+                    newMelding.weer_windsnelheid_m_per_sec = weather['windsnelheid_m_per_sec']
+                    newMelding.weer_windrichting_graden = weather['windrichting_graden']
+                    newMelding.weer_bewolking_procent = weather['bewolking_procent']
+                    newMelding.weer_regen_mm = weather['regen_mm']
+                    newMelding.weer_sneeuw_mm = weather['sneeuw_mm']
+                    newMelding.weer_zonnestand = weather['zonnestand']
+                    newMelding.weer_locatie_naam = weather['locatie_naam']
+
                 db.session.add(newMelding)
                 new_meldingen += 1
             db.session.commit()

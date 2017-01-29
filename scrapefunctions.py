@@ -1,12 +1,13 @@
 import re
 import urllib2
+import time
 from datetime import datetime
 from urllib2 import urlopen
-import random
 
-from bs4 import BeautifulSoup
 import socks
 import socket
+import requests
+from bs4 import BeautifulSoup
 
 from consts import \
     WEGNUMMER, \
@@ -20,7 +21,12 @@ from consts import \
     BEIDE, \
     CONTROLE_TYPES, \
     HM_PAAL_URL, \
-    HM_PAAL_WEG_URL
+    HM_PAAL_WEG_URL, \
+    OPENWEATHER_API_URL, \
+    VOOR_ZONSOPGANG, \
+    NA_ZONSOPGANG, \
+    NA_ZONSONDERGANG
+from credentials import OPENWEATHER_APP_ID
 
 
 def get_wegnummer(melding, wegnummer_id):
@@ -115,3 +121,59 @@ def get_hm_paal_page(url):
         return page
     except urllib2.HTTPError, e:
         print e.fp.read()
+
+
+def get_weather(lat, lon, time_unix):
+    params = {
+        'APPID': OPENWEATHER_APP_ID,
+        'units': 'metric',
+        'lang': 'nl',
+        'lat': lat,
+        'lon': lon,
+    }
+    r = requests.get(OPENWEATHER_API_URL, params=params)
+    data = r.json()
+
+    rain = data['rain']['3h'] if 'rain' in data else None
+    snow = data['snow']['3h'] if 'snow' in data else None
+
+    zonnestand = None
+    if time_unix <= data['sys']['sunrise']:
+        zonnestand = VOOR_ZONSOPGANG
+    elif time_unix >= data['sys']['sunset']:
+        zonnestand = NA_ZONSONDERGANG
+    else:
+        zonnestand = NA_ZONSOPGANG
+
+    return {
+        'type': data['weather'][0]['main'],
+        'beschrijving': data['weather'][0]['description'],
+        'temp': data['main']['temp'],
+        'temp_max': data['main']['temp_max'],
+        'temp_min': data['main']['temp_min'],
+        'luchtdruk_hpa': data['main']['pressure'],
+        'luchtvochtigheid_procent': data['main']['humidity'],
+        'windsnelheid_m_per_sec': data['wind']['speed'],
+        'windrichting_graden': data['wind']['deg'],
+        'bewolking_procent': data['clouds']['all'],
+        'regen_mm': rain,
+        'sneeuw_mm': snow,
+        'zonnestand': zonnestand,
+        'locatie_naam': data['name'],
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

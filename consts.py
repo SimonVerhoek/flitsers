@@ -69,3 +69,10 @@ LOCATIES HECTOMETERPALEN
 HM_PAAL_URL = 'http://hmpaal.nl/hectometer/'
 HM_PAAL_WEG_URL = 'http://hmpaal.nl/weg/'
 
+
+OPENWEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
+
+VOOR_ZONSOPGANG = 'voor_zonsopgang'
+NA_ZONSOPGANG = 'na_zonsopgang'
+NA_ZONSONDERGANG = 'na_zonsondergang'
+ZONNESTANDEN = (VOOR_ZONSOPGANG, NA_ZONSOPGANG, NA_ZONSONDERGANG)
