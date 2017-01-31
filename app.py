@@ -1,31 +1,23 @@
-import datetime
-from json import dumps
+from datetime import datetime
 
 from flask import render_template
 
-from model import *
-
-# executes scraper
-# import scraper
+from model import app, MeldingSchema, Melding
 
 
 meldingen_schema = MeldingSchema(many=True)
 
-
 @app.route('/')
 def home():
   q = Melding.query
-  data = q.all()
-  flitsers = meldingen_schema.dump(data)
-
-  first_flitser = q.order_by(Melding.datum).first()
+  flitsers_today = q.filter_by(datum=datetime.now().date()).all()
+  all_flitsers = q.all()
 
   # [0] for sending without metadata like 'errors'
   return render_template(
     'content.html',
-    data=data,
-    first_flitser=first_flitser,
-    flitsers=flitsers[0]
+    flitsers=meldingen_schema.dump(all_flitsers)[0],
+    flitsers_today=meldingen_schema.dump(flitsers_today)[0]
   )
 
 

@@ -2,23 +2,29 @@
 {% block content %}
 <script type="text/javascript">
 	var flitsers = {{ flitsers|tojson }};
+  var flitsers_today = {{ flitsers_today|tojson }};
 </script>
 
 <div class="col-md-8 col-sm-12">
 	<div id="map">
 		<div id="map-canvas"></div>
 	</div>
+  <div id="slider"></div>
 </div>
 
 <div class="col-md-4 col-sm-12">
   <table class="table">
     <tr>
-      <td>Aantal gemeten flitsers</td>
-      <td>{{ data|length }}</td>
+      <td>Vandaag:</td>
+      <td>{{ flitsers_today|length }} flitsers</td>
+    </tr>
+    <tr>
+      <td>Totaal aantal gemeten flitsers</td>
+      <td>{{ flitsers|length }}</td>
     </tr>
     <tr>
       <td>Gemeten sinds:</td>
-      <td>{{ first_flitser.datum }}</td>
+      <td>{{ flitsers[0].datum }}</td>
     </tr>
   </table>
 </div>
