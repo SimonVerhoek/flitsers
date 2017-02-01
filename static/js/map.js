@@ -65,7 +65,7 @@ function initMap() {
 	// init slider bar
 	$('#slider').dateRangeSlider({
 		bounds: {
-			min: new Date(flitsers[0].datum),
+			min: new Date(first_flitser_date),
 			max: currentDate,
 		},
 		defaultValues: {
@@ -82,13 +82,14 @@ function createMarker(flitser, infowindow) {
 	});
 
   google.maps.event.addListener(marker, 'click', function(){
-      infowindow.close();
-      infowindow.setContent( setContent(flitser) );
-      infowindow.open(map, marker);
+    infowindow.close();
+    infowindow.setContent( setContent(flitser) );
+    infowindow.open(map, marker);
   });
 
 	flitser.marker = marker;
 }
+
 
 function updateMarkerVisibility(flitser, date_min, date_max) {
 	if (flitser.datum >= date_min && flitser.datum <= date_max) {
@@ -104,13 +105,25 @@ $(document).ready(function() {
 
 	var infowindow = new google.maps.InfoWindow();
 
-	// create markers
-	for (var i = 0; i < flitsers.length; i++) {
-		if (flitsers[i].locatie_lat && flitsers[i].locatie_lon) {
-			createMarker( flitsers[i], infowindow );
-		}
-	}
+	var flitsers;
 
+	// get all flitsers
+	$.ajax({
+		url: '/get_all_flitsers',
+		type: 'GET',
+		dataType: 'json',
+		data: { get_param: 'value' },
+		success: function(data) {
+			flitsers = data;
+			// create markers
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].locatie_lat && data[i].locatie_lon) {
+					createMarker( data[i], infowindow );
+				}
+			}
+		}
+	});
+	
 	// update markers shown
 	$('#slider').bind("valuesChanged", function(e, data) {
 		var date_min = data.values.min.toJSON().slice(0, 10);

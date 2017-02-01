@@ -22,14 +22,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <strong><link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"></strong>    
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE9wWbKXYDuTXwLnA9hfJcBeq-F40YH58&libraries=visualization"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/heatmap.js') }}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jQDateRangeSlider-min.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/iThing.css') }}" type="text/css" />
+    <script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}" defer></script>
   </head>
   <body>
      
     <div class="container">
-
       <div class="row">
         <div class="col-md-12">
           <div class="page-header">
@@ -42,8 +41,7 @@
         {% block content %}
         {% endblock %}
       </div>
-  
     </div>
-     
+
   </body>
 </html>
