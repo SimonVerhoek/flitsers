@@ -1,3 +1,20 @@
+var infowindow = new google.maps.InfoWindow();
+
+function createMarker(flitser, infowindow) {
+	var latLng = new google.maps.LatLng(flitser.locatie_lat, flitser.locatie_lon);
+	var marker = new google.maps.Marker({
+		position: latLng
+	});
+
+  google.maps.event.addListener(marker, 'click', function(){
+    infowindow.close();
+    infowindow.setContent( setContent(flitser) );
+    infowindow.open(map, marker);
+  });
+
+	flitser.marker = marker;
+}
+
 function setContent(flitser) {
 	var weather_conditions = 'Onbekend';
 	if (flitser.weer_beschrijving != null && flitser.weer_temp != null) {
@@ -45,22 +62,19 @@ function initMap() {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	});
 
+	// show today's flitsers on initialisation
+	var currentDate = new Date();
+	var today = currentDate.toJSON().slice(0, 10);
+
 	for (var i = 0; i < flitsers_today.length; i++) {	
 		var lat = flitsers_today[i].locatie_lat;
 		var lng = flitsers_today[i].locatie_lon;
 
 		if (lat && lng) {
-			var marker = new google.maps.Marker({
-				position: {lat: lat, lng: lng}
-			});
-
-			marker.setMap(map);
+			createMarker(flitsers_today[i], infowindow);
+			updateMarkerVisibility(flitsers_today[i], today, today)
 		}
 	};
-
-	// show today's flitsers on initialisation
-	var currentDate = new Date();
-	var today = currentDate.toJSON().slice(0, 10);
 
 	// init slider bar
 	$('#slider').dateRangeSlider({
@@ -75,22 +89,6 @@ function initMap() {
 	});
 }
 
-function createMarker(flitser, infowindow) {
-	var latLng = new google.maps.LatLng(flitser.locatie_lat, flitser.locatie_lon);
-	var marker = new google.maps.Marker({
-		position: latLng
-	});
-
-  google.maps.event.addListener(marker, 'click', function(){
-    infowindow.close();
-    infowindow.setContent( setContent(flitser) );
-    infowindow.open(map, marker);
-  });
-
-	flitser.marker = marker;
-}
-
-
 function updateMarkerVisibility(flitser, date_min, date_max) {
 	if (flitser.datum >= date_min && flitser.datum <= date_max) {
 		flitser.marker.setMap(map);
@@ -102,8 +100,6 @@ function updateMarkerVisibility(flitser, date_min, date_max) {
 
 $(document).ready(function() {
 	initMap();
-
-	var infowindow = new google.maps.InfoWindow();
 
 	var flitsers;
 
@@ -134,6 +130,6 @@ $(document).ready(function() {
 				updateMarkerVisibility( flitsers[i], date_min, date_max );
 			}
 		}
+	});
 
-	})
 });
