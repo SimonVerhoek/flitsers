@@ -5,3 +5,12 @@
 #InfoWindow-table td {
 	padding: 5px;
 }
+
+.extra-space {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.btn_width {
+	width: 140px;
+}

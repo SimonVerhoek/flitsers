@@ -90,7 +90,7 @@ function initMap() {
 }
 
 function updateMarkerVisibility(flitser, date_min, date_max) {
-	if (flitser.datum >= date_min && flitser.datum <= date_max) {
+	if (flitser.datum > date_min && flitser.datum <= date_max) {
 		flitser.marker.setMap(map);
 	} else {
 		flitser.marker.setMap(null);
@@ -132,4 +132,62 @@ $(document).ready(function() {
 		}
 	});
 
+});
+
+$(document).ajaxComplete(function(event, xhr, settings) {
+	var todayStart = moment().startOf('day').toDate();
+	var todayEnd = moment().endOf('day').toDate();
+
+	var yesterdayStart = moment().subtract(1, 'days').startOf('day').toDate();
+	var yesterdayEnd = moment().subtract(1, 'days').endOf('day').toDate();
+
+	var startOfWeek = moment().startOf('isoweek').toDate();
+	var endOfWeek = moment().endOf('isoweek').toDate();
+
+	var startOfLastWeek = moment().subtract(1, 'week').startOf('isoweek').toDate();
+	var endOfLastWeek = moment().subtract(1, 'week').endOf('isoweek').toDate();
+	
+	var startOfMonth = moment().startOf('month').toDate();
+	var endOfMonth = moment().endOf('month').toDate();
+
+	var startOfLastMonth = moment().subtract(1, 'month').startOf('month').toDate();
+	var endOfLastMonth = moment().subtract(1, 'month').endOf('month').toDate();
+
+	var startOfYear = moment().startOf('year').toDate();
+	var endOfYear = moment().endOf('year').toDate();
+
+	var startOfLastYear = moment().subtract(1, 'year').startOf('year').toDate();
+	var endOfLastYear = moment().subtract(1, 'year').endOf('year').toDate();
+	
+	$('#today').on('click', function() {
+		$('#slider').dateRangeSlider('values', todayStart, todayEnd);
+	});
+
+	$('#yesterday').on('click', function() {
+		$('#slider').dateRangeSlider('values', yesterdayStart, yesterdayEnd);
+	});
+
+	$('#this_week').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfWeek, endOfWeek);
+	});
+
+	$('#last_week').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfLastWeek, endOfLastWeek);
+	});
+
+	$('#this_month').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfMonth, endOfMonth);
+	});
+
+	$('#last_month').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfLastMonth, endOfLastMonth);
+	});
+
+	$('#this_year').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfYear, endOfYear);
+	});
+
+	$('#last_year').on('click', function() {
+		$('#slider').dateRangeSlider('values', startOfLastYear, endOfLastYear);
+	});
 });
