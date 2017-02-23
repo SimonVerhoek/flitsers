@@ -1,21 +1,82 @@
 var infowindow = new google.maps.InfoWindow();
+var sliderElement = $('#slider');
 
-function createMarker(flitser, infowindow) {
-	var latLng = new google.maps.LatLng(flitser.locatie_lat, flitser.locatie_lon);
-	var marker = new google.maps.Marker({
-		position: latLng
-	});
+var Slider = {
+	init: function(lower_bound, upper_bound) {
+		$(sliderElement).dateRangeSlider({
+			bounds: {
+				min: lower_bound,
+				max: upper_bound,
+			},
+			defaultValues: {
+				min: upper_bound,
+				max: upper_bound,
+			}
+		});
+	},
 
-  google.maps.event.addListener(marker, 'click', function(){
-    infowindow.close();
-    infowindow.setContent( setContent(flitser) );
-    infowindow.open(map, marker);
-  });
-
-	flitser.marker = marker;
+	update: function(lower_bound, upper_bound) {
+		$(sliderElement).dateRangeSlider('values', lower_bound, upper_bound);
+	}
 }
 
-function setContent(flitser) {
+var GMap = {
+	init: function() {
+		var Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
+
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: Nederland,
+			zoom: 8,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		});
+
+		// show today's flitsers on initialisation
+		var currentDate = new Date();
+		var today = currentDate.toJSON().slice(0, 10);
+
+		for (var i = 0; i < flitsers_today.length; i++) {	
+			var lat = flitsers_today[i].locatie_lat;
+			var lng = flitsers_today[i].locatie_lon;
+
+			if (lat && lng) {
+				Marker.init(flitsers_today[i], infowindow);
+				Marker.updateVisibility(flitsers_today[i], today, today)
+			}
+		};
+
+		// init slider bar
+		var lower_bound = new Date(first_flitser_date);
+		var upper_bound = currentDate;
+		Slider.init(lower_bound, upper_bound);
+	}
+}
+
+var Marker = {
+	init: function(flitser, infowindow) {
+		var latLng = new google.maps.LatLng(flitser.locatie_lat, flitser.locatie_lon);
+		var marker = new google.maps.Marker({
+			position: latLng
+		});
+
+	  google.maps.event.addListener(marker, 'click', function(){
+	    infowindow.close();
+	    infowindow.setContent( getContent(flitser) );
+	    infowindow.open(map, marker);
+	  });
+
+		flitser.marker = marker;
+	},
+
+	updateVisibility: function(flitser, date_min, date_max) {
+		if (flitser.datum > date_min && flitser.datum <= date_max) {
+			flitser.marker.setMap(map);
+		} else {
+			flitser.marker.setMap(null);
+		}
+	}
+}
+
+function getContent(flitser) {
 	var weather_conditions = 'Onbekend';
 	if (flitser.weer_beschrijving != null && flitser.weer_temp != null) {
 		weather_conditions = flitser.weer_beschrijving + ", " + flitser.weer_temp + "&deg;C";
@@ -53,53 +114,9 @@ function setContent(flitser) {
 	return content;
 }
 
-function initMap() {
-	var Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
-
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: Nederland,
-		zoom: 8,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
-	});
-
-	// show today's flitsers on initialisation
-	var currentDate = new Date();
-	var today = currentDate.toJSON().slice(0, 10);
-
-	for (var i = 0; i < flitsers_today.length; i++) {	
-		var lat = flitsers_today[i].locatie_lat;
-		var lng = flitsers_today[i].locatie_lon;
-
-		if (lat && lng) {
-			createMarker(flitsers_today[i], infowindow);
-			updateMarkerVisibility(flitsers_today[i], today, today)
-		}
-	};
-
-	// init slider bar
-	$('#slider').dateRangeSlider({
-		bounds: {
-			min: new Date(first_flitser_date),
-			max: currentDate,
-		},
-		defaultValues: {
-			min: currentDate,
-			max: currentDate,
-		}
-	});
-}
-
-function updateMarkerVisibility(flitser, date_min, date_max) {
-	if (flitser.datum > date_min && flitser.datum <= date_max) {
-		flitser.marker.setMap(map);
-	} else {
-		flitser.marker.setMap(null);
-	}
-}
-
 
 $(document).ready(function() {
-	initMap();
+	GMap.init();
 
 	var flitsers;
 
@@ -114,7 +131,7 @@ $(document).ready(function() {
 			// create markers
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].locatie_lat && data[i].locatie_lon) {
-					createMarker( data[i], infowindow );
+					Marker.init( data[i], infowindow );
 				}
 			}
 		}
@@ -127,7 +144,7 @@ $(document).ready(function() {
 		
 		for (i = 0; i < flitsers.length; i++) {
 			if (flitsers[i].marker) {
-				updateMarkerVisibility( flitsers[i], date_min, date_max );
+				Marker.updateVisibility( flitsers[i], date_min, date_max );
 			}
 		}
 	});
@@ -160,34 +177,34 @@ $(document).ajaxComplete(function(event, xhr, settings) {
 	var endOfLastYear = moment().subtract(1, 'year').endOf('year').toDate();
 	
 	$('#today').on('click', function() {
-		$('#slider').dateRangeSlider('values', todayStart, todayEnd);
+		Slider.update(todayStart, todayEnd);
 	});
 
 	$('#yesterday').on('click', function() {
-		$('#slider').dateRangeSlider('values', yesterdayStart, yesterdayEnd);
+		Slider.update(yesterdayStart, yesterdayEnd);
 	});
 
 	$('#this_week').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfWeek, endOfWeek);
+		Slider.update(startOfWeek, endOfWeek);
 	});
 
 	$('#last_week').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfLastWeek, endOfLastWeek);
+		Slider.update(startOfLastWeek, endOfLastWeek);
 	});
 
 	$('#this_month').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfMonth, endOfMonth);
+		Slider.update(startOfMonth, endOfMonth);
 	});
 
 	$('#last_month').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfLastMonth, endOfLastMonth);
+		Slider.update(startOfLastMonth, endOfLastMonth);
 	});
 
 	$('#this_year').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfYear, endOfYear);
+		Slider.update(startOfYear, endOfYear);
 	});
 
 	$('#last_year').on('click', function() {
-		$('#slider').dateRangeSlider('values', startOfLastYear, endOfLastYear);
+		Slider.update(startOfLastYear, endOfLastYear);
 	});
 });
