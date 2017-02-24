@@ -30,24 +30,22 @@ var GMap = {
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
 
-		// show today's flitsers on initialisation
-		var currentDate = new Date();
-		var today = currentDate.toJSON().slice(0, 10);
-
-		for (var i = 0; i < flitsers_today.length; i++) {	
-			var lat = flitsers_today[i].locatie_lat;
-			var lng = flitsers_today[i].locatie_lon;
-
-			if (lat && lng) {
-				Marker.init(flitsers_today[i], infowindow);
-				Marker.updateVisibility(flitsers_today[i], today, today)
-			}
-		};
-
 		// init slider bar
 		var lower_bound = new Date(first_flitser_date);
-		var upper_bound = currentDate;
+		var upper_bound = moment(today);
 		Slider.init(lower_bound, upper_bound);
+
+		// show today's flitsers on initialisation
+		var today = moment().format('YYYY-MM-DD');
+		var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');	
+
+		// create markers
+		for (var i = 0; i < flitsers_today.length; i++) {
+			if (flitsers_today[i].locatie_lat && flitsers_today[i].locatie_lon) {
+				Marker.init( flitsers_today[i], infowindow );
+				Marker.updateVisibility(flitsers_today[i], yesterday, today)
+			}
+		}
 	}
 }
 
@@ -137,7 +135,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	// update markers shown
+	// update markers show
 	$('#slider').bind("valuesChanged", function(e, data) {
 		var date_min = data.values.min.toJSON().slice(0, 10);
 		var date_max = data.values.max.toJSON().slice(0, 10);
