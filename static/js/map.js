@@ -39,39 +39,48 @@ var GMap = {
 		var today = moment().format('YYYY-MM-DD');
 		var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');	
 
-		// create markers
+		// create flitsers
 		for (var i = 0; i < flitsers_today.length; i++) {
 			if (flitsers_today[i].locatie_lat && flitsers_today[i].locatie_lon) {
-				Marker.init( flitsers_today[i], infowindow );
-				Marker.updateVisibility(flitsers_today[i], yesterday, today)
+				var flitser = new Flitser(flitsers_today[i]);
+				flitser.updateVisibility(yesterday, today);
 			}
 		}
 	}
 }
 
-var Marker = {
-	init: function(flitser, infowindow) {
-		var latLng = new google.maps.LatLng(flitser.locatie_lat, flitser.locatie_lon);
+var Flitser = function(obj) {
+	this.marker = {};
+	
+	// get properties of given JSON object
+	for (var prop in obj) this[prop] = obj[prop];	
+
+	this.initMarker = function() {
+		var latLng = new google.maps.LatLng(this.locatie_lat, this.locatie_lon);
 		var marker = new google.maps.Marker({
 			position: latLng
 		});
 
-	  google.maps.event.addListener(marker, 'click', function(){
+		var content = getContent(this);
+
+		google.maps.event.addListener(marker, 'click', function(){
 	    infowindow.close();
-	    infowindow.setContent( getContent(flitser) );
+	    infowindow.setContent( content );
 	    infowindow.open(map, marker);
 	  });
 
-		flitser.marker = marker;
-	},
+	  this.marker = marker;
+	};
 
-	updateVisibility: function(flitser, date_min, date_max) {
-		if (flitser.datum > date_min && flitser.datum <= date_max) {
-			flitser.marker.setMap(map);
+	this.updateVisibility = function(date_min, date_max) {
+		if (this.datum > date_min && this.datum <= date_max) {
+			this.marker.setMap(map);
 		} else {
-			flitser.marker.setMap(null);
+			this.marker.setMap(null);
 		}
-	}
+	};
+
+	this.initMarker();
 }
 
 function getContent(flitser) {
@@ -116,7 +125,7 @@ function getContent(flitser) {
 $(document).ready(function() {
 	GMap.init();
 
-	var flitsers;
+	var flitsers = [];
 
 	// get all flitsers
 	$.ajax({
@@ -125,11 +134,11 @@ $(document).ready(function() {
 		dataType: 'json',
 		data: { get_param: 'value' },
 		success: function(data) {
-			flitsers = data;
 			// create markers
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].locatie_lat && data[i].locatie_lon) {
-					Marker.init( data[i], infowindow );
+					var flitser = new Flitser( data[i] );
+					flitsers.push(flitser);
 				}
 			}
 		}
@@ -142,7 +151,7 @@ $(document).ready(function() {
 		
 		for (i = 0; i < flitsers.length; i++) {
 			if (flitsers[i].marker) {
-				Marker.updateVisibility( flitsers[i], date_min, date_max );
+				flitsers[i].updateVisibility(date_min, date_max);
 			}
 		}
 	});
