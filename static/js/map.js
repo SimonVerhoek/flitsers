@@ -51,7 +51,7 @@ var GMap = {
 
 var Flitser = function(obj) {
 	this.marker = {};
-	
+
 	// get properties of given JSON object
 	for (var prop in obj) this[prop] = obj[prop];	
 
@@ -61,7 +61,7 @@ var Flitser = function(obj) {
 			position: latLng
 		});
 
-		var content = getContent(this);
+		var content = this.getContent();
 
 		google.maps.event.addListener(marker, 'click', function(){
 	    infowindow.close();
@@ -82,16 +82,15 @@ var Flitser = function(obj) {
 
 	this.initMarker();
 }
-
-function getContent(flitser) {
+Flitser.prototype.getContent = function() {
 	var weather_conditions = 'Onbekend';
-	if (flitser.weer_beschrijving != null && flitser.weer_temp != null) {
-		weather_conditions = flitser.weer_beschrijving + ", " + flitser.weer_temp + "&deg;C";
+	if (this.weer_beschrijving != null && this.weer_temp != null) {
+		weather_conditions = this.weer_beschrijving + ", " + this.weer_temp + "&deg;C";
 	}
 
 	var last_activity = 'Onbekend';
-	if (flitser.laatste_activiteit != null) {
-		last_activity = flitser.laatste_activiteit.substring(0, 8)
+	if (this.laatste_activiteit != null) {
+		last_activity = this.laatste_activiteit.substring(0, 8)
 	}
 
 	var content = [
@@ -99,16 +98,16 @@ function getContent(flitser) {
 	  "	<table id='InfoWindow-table'>",
 	  "		<tbody>",
 	  "			<tr>",
-	  "				<td>Datum:</td><td>" + flitser.datum + "</td>",
+	  "				<td>Datum:</td><td>" + this.datum + "</td>",
 	  "			</tr>",
 	  "			<tr>",
-	  "				<td>Type flitser:</td><td>" + flitser.type_controle + "</td>",
+	  "				<td>Type this:</td><td>" + this.type_controle + "</td>",
 	  "			</tr>",
 	  "			<tr>",
-	  "				<td>Locatie:</td><td>" + flitser.wegnummer + " (" + flitser.soort_weg + "), hectometerpaal " + flitser.hm_paal + "</td>",
+	  "				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
 	  "			</tr>",
 	  "			<tr>",
-	  "				<td>Activiteit:</td><td>van " + flitser.tijd_van_melden + " tot " + last_activity + "</td>",
+	  "				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
 	  "			</tr>",
 	  "			<tr>",
 	  "				<td>Weer:</td><td>" + weather_conditions + "</td>",
