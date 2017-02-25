@@ -1,6 +1,9 @@
 var infowindow = new google.maps.InfoWindow();
 var sliderElement = $('#slider');
 
+var flitsers = [];
+var flitsers_today_obj = [];
+
 var Slider = {
 	init: function(lower_bound, upper_bound) {
 		$(sliderElement).dateRangeSlider({
@@ -44,6 +47,7 @@ var GMap = {
 			if (flitsers_today[i].locatie_lat && flitsers_today[i].locatie_lon) {
 				var flitser = new Flitser(flitsers_today[i]);
 				flitser.updateVisibility(yesterday, today);
+				flitsers_today_obj.push(flitser);
 			}
 		}
 	}
@@ -124,8 +128,6 @@ Flitser.prototype.getContent = function() {
 $(document).ready(function() {
 	GMap.init();
 
-	var flitsers = [];
-
 	// get all flitsers
 	$.ajax({
 		url: '/get_all_flitsers',
@@ -152,6 +154,13 @@ $(document).ready(function() {
 			if (flitsers[i].marker) {
 				flitsers[i].updateVisibility(date_min, date_max);
 			}
+		}
+	});
+
+	// remove flitsers passed on initial load
+	$('button').click(function() {
+		for (i = 0; i < flitsers_today_obj.length; i++) {
+			flitsers_today_obj[i].marker.setMap(null);
 		}
 	});
 
