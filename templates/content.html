@@ -3,60 +3,72 @@
 <script type="text/javascript">
   var flitsers_today = {{ flitsers_today|tojson }};
   var first_flitser_date = "{{ first_flitser_date }}";
+  var test = "{{ test }}";
+  console.log(test)
 </script>
 
-<div class="col-md-8 col-sm-12">
-  <div class="row">
-    <div id="map">
-      <div id="map-canvas"></div>
-    </div>  
+<div class="row">
+  <div class="col-md-8 col-sm-12">
+    <div class="row">
+      <div id="map">
+        <div id="map-canvas"></div>
+      </div>  
+    </div>
+
+    <div class="row extra-space">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div id="slider"></div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+
+    <div class="row extra-space">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10 text-center">
+        <button type="button" id="this_year" class="btn btn-primary btn-lg btn_width">Dit jaar</button>
+        <button type="button" id="this_month" class="btn btn-primary btn-lg btn_width">Deze maand</button>
+        <button type="button" id="this_week" class="btn btn-primary btn-lg btn_width">Deze week</button>
+        <button type="button" id="today" class="btn btn-primary btn-lg btn_width">Vandaag</button>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10 text-center">
+        <button type="button" id="last_year" class="btn btn-primary btn-lg btn_width">Vorig jaar</button>
+        <button type="button" id="last_month" class="btn btn-primary btn-lg btn_width">Vorige maand</button>
+        <button type="button" id="last_week" class="btn btn-primary btn-lg btn_width">Vorige week</button>
+        <button type="button" id="yesterday" class="btn btn-primary btn-lg btn_width">Gisteren</button>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
   </div>
 
-  <div class="row extra-space">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10">
-      <div id="slider"></div>
-    </div>
-    <div class="col-sm-1"></div>
-  </div>
-
-  <div class="row extra-space">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10 text-center">
-      <button type="button" id="this_year" class="btn btn-primary btn-lg btn_width">Dit jaar</button>
-      <button type="button" id="this_month" class="btn btn-primary btn-lg btn_width">Deze maand</button>
-      <button type="button" id="this_week" class="btn btn-primary btn-lg btn_width">Deze week</button>
-      <button type="button" id="today" class="btn btn-primary btn-lg btn_width">Vandaag</button>
-    </div>
-    <div class="col-sm-1"></div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10 text-center">
-      <button type="button" id="last_year" class="btn btn-primary btn-lg btn_width">Vorig jaar</button>
-      <button type="button" id="last_month" class="btn btn-primary btn-lg btn_width">Vorige maand</button>
-      <button type="button" id="last_week" class="btn btn-primary btn-lg btn_width">Vorige week</button>
-      <button type="button" id="yesterday" class="btn btn-primary btn-lg btn_width">Gisteren</button>
-    </div>
-    <div class="col-sm-1"></div>
+  <div class="col-md-4 col-sm-12">
+    <table class="table">
+      <tr>
+        <td>Vandaag:</td>
+        <td>{{ flitsers_today|length }} flitsers</td>
+      </tr>
+      <tr>
+        <td>Totaal aantal gemeten flitsers</td>
+        <td>{{ flitsers_total_count }}</td>
+      </tr>
+      <tr>
+        <td>Gemeten sinds:</td>
+        <td>{{ first_flitser_date }}</td>
+      </tr>
+    </table>
   </div>
 </div>
 
-<div class="col-md-4 col-sm-12">
-  <table class="table">
-    <tr>
-      <td>Vandaag:</td>
-      <td>{{ flitsers_today|length }} flitsers</td>
-    </tr>
-    <tr>
-      <td>Totaal aantal gemeten flitsers</td>
-      <td>{{ flitsers_total_count }}</td>
-    </tr>
-    <tr>
-      <td>Gemeten sinds:</td>
-      <td>{{ first_flitser_date }}</td>
-    </tr>
-  </table>
+<div class="row">
+  <div class="col-md-8 col-sm12">
+    <div class="row">
+      <canvas id="chart" width="400" height="400"></canvas>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -13,19 +13,23 @@
       ga('send', 'pageview');
     </script>
     <meta name="google-site-verification" content="rPd_8-8p1_nA3N9IlwZnjhcjmtqRzLXuhVQrTgYAkEA" />
-    <!-- Libraries & frameworks -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- CDNs -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <!-- mobile viewport rendering -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <strong><link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"></strong>    
+    <!-- local libs -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/iThing.css') }}" type="text/css" />
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE9wWbKXYDuTXwLnA9hfJcBeq-F40YH58&libraries=visualization"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jQDateRangeSlider-min.js') }}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/moment-with-locales.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/iThing.css') }}" type="text/css" />
+    <script type="text/javascript" src="{{ url_for('static', filename='js/Chart.min.js') }}" defer></script>
+    <!-- custom JS -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/chart.js') }}" defer></script>
+    <!-- mobile viewport rendering -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
      
@@ -38,10 +42,8 @@
         </div>
       </div>
       
-      <div class="row">
-        {% block content %}
-        {% endblock %}
-      </div>
+      {% block content %}
+      {% endblock %}
     </div>
 
   </body>

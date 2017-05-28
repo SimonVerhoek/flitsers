@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 """ MODELS """
 class Melding(db.Model):
     __tablename__ = 'melding'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     datum = db.Column(db.DateTime, nullable=False, default=datetime.now())
     soort_weg = db.Column(db.String, nullable=False)
     wegnummer = db.Column(db.String, nullable=False)

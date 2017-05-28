@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import render_template
 
 from model import app, MeldingSchema, Melding
+from consts import TIME_SLOTS, RADAR, LASER, ANPR
 
 
 meldingen_schema = MeldingSchema(many=True)
@@ -24,7 +25,7 @@ def home():
     )
 
 
-@app.route('/get_all_flitsers')
+@app.route('/get_flitser_data')
 def get_all_flitsers():
     q = Melding.query.all()
 
@@ -63,7 +64,54 @@ def get_all_flitsers():
             'weer_locatie_naam': flitser.weer_locatie_naam,
         })
 
-    return json.dumps(flitsers)
+    return json.dumps({
+        'flitsers': flitsers,
+    })
+
+
+@app.route('/get_chart_data')
+def get_chart_data():
+    q = Melding.query
+
+    flitser_count_per_time_slot = {
+        RADAR: [],
+        LASER: [],
+        ANPR: [],
+    }
+
+    for ts in TIME_SLOTS:
+        radar_count = 0
+        laser_count = 0
+        anpr_count = 0
+        
+        for flitser in q.all():
+            fstart = flitser.tijd_van_melden
+            fstop = flitser.laatste_activiteit
+            active_in_time_slot = (ts.start <= fstart <= ts.stop) or (fstop and ts.start <= fstop <= ts.stop)
+
+            if active_in_time_slot:
+                if flitser.type_controle == RADAR:
+                    radar_count += 1
+                elif flitser.type_controle == LASER:
+                    laser_count += 1
+                elif flitser.type_controle == ANPR:
+                    anpr_count += 1
+                else:
+                    raise ValueError
+
+        flitser_count_per_time_slot[RADAR].append(radar_count)
+        flitser_count_per_time_slot[LASER].append(laser_count)
+        flitser_count_per_time_slot[ANPR].append(anpr_count)
+
+    from pprint import pprint
+    pprint(flitser_count_per_time_slot)
+
+    time_slots = [t.title for t in TIME_SLOTS]
+
+    return json.dumps({
+        'time_slots': time_slots,
+        'flitser_count_per_time_slot': flitser_count_per_time_slot,
+    })
 
 
 if __name__ == '__main__':
