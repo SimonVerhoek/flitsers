@@ -178,7 +178,10 @@ var Flitser = function(obj) {
 	};
 
 	this.updateVisibility = function(date_min, date_max) {
-		if (this.datum > date_min && this.datum <= date_max) {
+		var date_min = moment(date_min).format('YYYY-MM-DD');
+		var date_max = moment(date_max).format('YYYY-MM-DD');
+
+		if (this.datum >= date_min && this.datum <= date_max) {
 			this.marker.setMap(map);
 		} else {
 			this.marker.setMap(null);

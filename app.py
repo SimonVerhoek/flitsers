@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import render_template, request
 from sqlalchemy import or_, func
@@ -89,12 +89,10 @@ def get_chart_data():
     if args:
         moment_start = args['start']
         moment_stop = args['stop']
-        base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
-        
-    datasets = get_datasets(query=base_q)
 
-    from pprint import pprint
-    pprint(datasets)
+        base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
+
+    datasets = get_datasets(query=base_q)
 
     return json.dumps({
         'datasets': datasets
