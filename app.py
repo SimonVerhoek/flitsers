@@ -90,13 +90,7 @@ def get_chart_data():
         moment_start = args['start']
         moment_stop = args['stop']
         base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
-
-        import iso8601
-        from pprint import pprint
-        # tz = pytz.timezone('Europe/Amsterdam')
-        pprint(moment_start)
-        pprint(moment_stop)
-        # pprint(pytz.localize(datetime.strptime(moment_start, '%Y-%m-%d'), is_dst=None).astimezone(tz))
+        
     datasets = get_datasets(query=base_q)
 
     from pprint import pprint
