@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from flask import render_template
+from flask import render_template, request
 from sqlalchemy import or_, func
 
 from model import app, MeldingSchema, Melding
@@ -13,16 +13,26 @@ meldingen_schema = MeldingSchema(many=True)
 @app.route('/')
 def home():
     q = Melding.query
-    flitsers_today = q.filter_by(datum=datetime.now().date()).all()
+    q_today = q.filter_by(datum=datetime.now().date())
+    flitsers_today = q_today.all()
+
+    datasets = get_datasets(query=q_today)
+    from pprint import pprint
+    pprint(datasets)
+
     flitsers_total_count = q.count()
     first_flitser = q.first()
+
+    time_slots = [t.title for t in TIME_SLOTS]
 
     # [0] for sending without metadata like 'errors'
     return render_template(
         'content.html',
         flitsers_today=meldingen_schema.dump(flitsers_today)[0],
         flitsers_total_count=flitsers_total_count,
-        first_flitser_date=first_flitser.datum
+        first_flitser_date=first_flitser.datum,
+        datasets=datasets,
+        time_slots=time_slots
     )
 
 
@@ -70,41 +80,60 @@ def get_all_flitsers():
     })
 
 
-@app.route('/get_chart_data')
+@app.route('/get_chart_data', methods=['POST'])
 def get_chart_data():
     base_q = Melding.query
 
-    from time import time
-    start = time()
+    # if start and stop given as input from frontend, only query those
+    args = request.json
+    if args:
+        moment_start = args['start']
+        moment_stop = args['stop']
+        base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
 
-    flitser_count_per_time_slot = {
-        RADAR: [],  
-        LASER: [],
-        ANPR: [],
-    }
-
-    for ts in TIME_SLOTS:
-        q = base_q.filter(or_(
-            Melding.tijd_van_melden.between(ts.start, ts.stop),
-            Melding.laatste_activiteit.between(ts.start, ts.stop)
-        ))
-
-        for type_controle in CONTROLE_TYPES:
-            count = q.filter_by(type_controle=type_controle).count()
-            flitser_count_per_time_slot[type_controle].append(int(count))
-        
-
+        import iso8601
+        from pprint import pprint
+        # tz = pytz.timezone('Europe/Amsterdam')
+        pprint(moment_start)
+        pprint(moment_stop)
+        # pprint(pytz.localize(datetime.strptime(moment_start, '%Y-%m-%d'), is_dst=None).astimezone(tz))
+    datasets = get_datasets(query=base_q)
 
     from pprint import pprint
-    pprint(flitser_count_per_time_slot)
-
-    time_slots = [t.title for t in TIME_SLOTS]
-
+    pprint(datasets)
 
     return json.dumps({
-        'time_slots': time_slots,
-        'flitser_count_per_time_slot': flitser_count_per_time_slot,
+        'datasets': datasets
     })
+
+
+def get_datasets(query):
+    datasets = []
+
+    for type_controle in CONTROLE_TYPES:
+        dataset = {
+            'label': type_controle,
+            'data': []
+        }
+        if type_controle == 'Radar':
+            dataset['backgroundColor'] = 'rgb(63, 127, 191)'
+        elif type_controle == 'Laser':
+            dataset['backgroundColor'] = 'rgba(63, 127, 191, 0.6)'
+        else:
+            dataset['backgroundColor'] = 'rgba(63, 127, 191, 0.2)'
+
+        q = query.filter_by(type_controle=type_controle)
+
+        for ts in TIME_SLOTS:
+            count = q.filter(or_(
+                Melding.tijd_van_melden.between(ts.start, ts.stop),
+                Melding.laatste_activiteit.between(ts.start, ts.stop)
+            )).count()
+            dataset['data'].append(int(count))
+
+        datasets.append(dataset)
+
+    return datasets
 
 
 if __name__ == '__main__':

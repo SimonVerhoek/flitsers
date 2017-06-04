@@ -1,33 +1,71 @@
+// variables passed by backend
+var flitsers_today = flitsers_today;
+var first_flitser_date = first_flitser_date;
+var datasets = datasets;
+var time_slots = time_slots;
+
+
 var infowindow = new google.maps.InfoWindow();
 var sliderElement = $('#slider');
 
 var flitsers = [];
 var flitsers_today_obj = [];
 
+var today = {
+	start: moment().startOf('day').toDate(),
+	stop: moment().endOf('day').toDate(),
+	start_backend: moment.utc().startOf('day').toDate(),
+	stop_backend: moment.utc().endOf('day').toDate(),
+};
+var yesterday = {
+	start: moment().subtract(1, 'days').startOf('day').toDate(),
+	stop: moment().subtract(1, 'days').endOf('day').toDate(),
+	start_backend: moment.utc().subtract(1, 'days').startOf('day').toDate(),
+	stop_backend: moment.utc().subtract(1, 'days').endOf('day').toDate()
+};
 
-var todayStart = moment().startOf('day').toDate();
-var todayEnd = moment().endOf('day').toDate();
 
-var yesterdayStart = moment().subtract(1, 'days').startOf('day').toDate();
-var yesterdayEnd = moment().subtract(1, 'days').endOf('day').toDate();
+var this_week = {
+	start: moment().startOf('isoweek').toDate(),
+	stop: moment().endOf('isoweek').toDate(),
+	start_backend: moment.utc().startOf('isoweek').toDate(),
+	stop_backend: moment.utc().endOf('isoweek').toDate(),
+}
 
-var startOfWeek = moment().startOf('isoweek').toDate();
-var endOfWeek = moment().endOf('isoweek').toDate();
+var last_week = {
+	start: moment().subtract(1, 'week').startOf('isoweek').toDate(),
+	stop: moment().subtract(1, 'week').endOf('isoweek').toDate(),
+	start_backend: moment.utc().subtract(1, 'week').startOf('isoweek').toDate(),
+	stop_backend: moment.utc().subtract(1, 'week').endOf('isoweek').toDate(),
+}
 
-var startOfLastWeek = moment().subtract(1, 'week').startOf('isoweek').toDate();
-var endOfLastWeek = moment().subtract(1, 'week').endOf('isoweek').toDate();
+var this_month = {
+	start: moment().startOf('month').toDate(),
+	stop: moment().endOf('month').toDate(),
+	start_backend: moment.utc().startOf('month').toDate(),
+	stop_backend: moment.utc().endOf('month').toDate(),
+}
 
-var startOfMonth = moment().startOf('month').toDate();
-var endOfMonth = moment().endOf('month').toDate();
+var last_month = {
+	start: moment().subtract(1, 'month').startOf('month').toDate(),
+	stop: moment().subtract(1, 'month').endOf('month').toDate(),
+	start_backend: moment.utc().subtract(1, 'month').startOf('month').toDate(),
+	stop_backend: moment.utc().subtract(1, 'month').endOf('month').toDate(),
+}
 
-var startOfLastMonth = moment().subtract(1, 'month').startOf('month').toDate();
-var endOfLastMonth = moment().subtract(1, 'month').endOf('month').toDate();
+var this_year = {
+	start: moment().startOf('year').toDate(),
+	stop: moment().endOf('year').toDate(),
+	start_backend: moment.utc().startOf('year').toDate(),
+	stop_backend: moment.utc().endOf('year').toDate(),
+}
 
-var startOfYear = moment().startOf('year').toDate();
-var endOfYear = moment().endOf('year').toDate();
-
-var startOfLastYear = moment().subtract(1, 'year').startOf('year').toDate();
-var endOfLastYear = moment().subtract(1, 'year').endOf('year').toDate();
+var last_year = {
+	start: moment().subtract(1, 'year').startOf('year').toDate(),
+	stop: moment().subtract(1, 'year').endOf('year').toDate(),
+	start_backend: moment.utc().subtract(1, 'year').startOf('year').toDate(),
+	stop_backend: moment.utc().subtract(1, 'year').endOf('year').toDate(),
+}
 
 
 var Slider = {
@@ -46,6 +84,46 @@ var Slider = {
 
 	update: function(lower_bound, upper_bound) {
 		$(sliderElement).dateRangeSlider('values', lower_bound, upper_bound);
+	}
+}
+
+var TimeChart = {
+	ctx: $('#chart'),
+	chart: null,
+	options: {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    }
+  },
+  init: function() {
+		TimeChart.chart = new Chart(TimeChart.ctx, {
+		  type: 'bar',
+		  data: {
+		    labels: time_slots,
+		    datasets: datasets
+		  },
+  		options: TimeChart.options
+		});
+	},
+
+	update(start, stop) {
+		var params = {
+			start: start,
+			stop: stop
+		};
+		$.ajax({
+			url: '/get_chart_data',
+			type: 'POST',
+			dataType: 'json',
+			contentType: 'application/json;charset=UTF-8',
+			data: JSON.stringify(params, null, '\t'),
+			success: function(data) {
+				TimeChart.chart.config.data.datasets = data.datasets;
+				TimeChart.chart.update();
+			}
+		});
 	}
 }
 
@@ -159,52 +237,12 @@ function create_markers(flitsers_list) {
 	}
 }
 
-function drawChart(labels, chart_data) {
-	var ctx = $('#chart');
-	var myChart = new Chart(ctx, {
-	  type: 'bar',
-	  data: {
-	    labels: labels,
-	    datasets: [{
-	      label: 'Radar',
-	      data: chart_data.Radar,
-	      backgroundColor: "rgba(153,255,51,0.4)"
-	    }, {
-	      label: 'Laser',
-	      data: chart_data.Laser,
-	      backgroundColor: "rgba(255,153,0,0.4)"
-	    }, {
-	      label: 'ANPR',
-	      data: chart_data.ANPR,
-	      backgroundColor: "rgba(7,5,6,0.4)"
-	    }]
-	  },
-	  options: {
-	    scales: {
-	      yAxes: [{
-	        stacked: true
-	      }]
-	    }
-	  }
-	});
-}
 
 
 $(document).ready(function() {
 	GMap.init();
 
-	// get chart data
-	$.ajax({
-		url: '/get_chart_data',
-		type: 'GET',
-		dataType: 'json',
-		success: function(data) {
-			var time_slots = data.time_slots;
-			var chart_data = data.flitser_count_per_time_slot;
-
-			drawChart(time_slots, chart_data);
-		}
-	});
+	TimeChart.init();
 
 	// get all flitsers
 	$.ajax({
@@ -235,38 +273,45 @@ $(document).ready(function() {
 		}
 	});
 
-});
-
-$(document).ajaxComplete(function(event, xhr, settings) {
+	// set buttons
 	$('#today').on('click', function() {
-		Slider.update(todayStart, todayEnd);
+		Slider.update(today.start, today.stop);
+		TimeChart.update(today.start_backend, today.stop_backend);
 	});
 
 	$('#yesterday').on('click', function() {
-		Slider.update(yesterdayStart, yesterdayEnd);
+		Slider.update(yesterday.start, yesterday.stop);
+		TimeChart.update(yesterday.start_backend, yesterday.stop_backend);
 	});
 
 	$('#this_week').on('click', function() {
-		Slider.update(startOfWeek, endOfWeek);
+		Slider.update(this_week.start, this_week.stop);
+		TimeChart.update(this_week.start_backend, this_week.stop_backend);
 	});
 
 	$('#last_week').on('click', function() {
-		Slider.update(startOfLastWeek, endOfLastWeek);
+		Slider.update(last_week.start, last_week.stop);
+		TimeChart.update(last_week.start_backend, last_week.stop_backend);
 	});
 
 	$('#this_month').on('click', function() {
-		Slider.update(startOfMonth, endOfMonth);
+		Slider.update(this_month.start, this_month.stop);
+		TimeChart.update(this_month.start_backend, this_month.stop_backend);
 	});
 
 	$('#last_month').on('click', function() {
-		Slider.update(startOfLastMonth, endOfLastMonth);
+		Slider.update(last_month.start, last_month.stop);
+		TimeChart.update(last_month.start_backend, last_month.stop_backend);
 	});
 
 	$('#this_year').on('click', function() {
-		Slider.update(startOfYear, endOfYear);
+		Slider.update(this_year.start, this_year.stop);
+		TimeChart.update(this_year.start_backend, this_year.stop_backend);
 	});
 
 	$('#last_year').on('click', function() {
-		Slider.update(startOfLastYear, endOfLastYear);
+		Slider.update(last_year.start, last_year.stop);
+		TimeChart.update(last_year.start_backend, last_year.stop_backend);
 	});
+
 });
