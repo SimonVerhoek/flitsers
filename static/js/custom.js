@@ -211,13 +211,13 @@ Flitser.prototype.getContent = function() {
 	if (this.laatste_activiteit != null) {
 		last_activity = this.laatste_activiteit.substring(0, 8)
 	}
-
+	
 	var content = [
 	  "<div id='InfoWindow'>",
 	  "	<table id='InfoWindow-table'>",
 	  "		<tbody>",
 	  "			<tr>",
-	  "				<td>Datum:</td><td>" + this.datum + "</td>",
+	  "				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
 	  "			</tr>",
 	  "			<tr>",
 	  "				<td>Type this:</td><td>" + this.type_controle + "</td>",
