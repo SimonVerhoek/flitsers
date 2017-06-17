@@ -17,8 +17,6 @@ def home():
     flitsers_today = q_today.all()
 
     datasets = get_datasets(query=q_today)
-    from pprint import pprint
-    pprint(datasets)
 
     flitsers_total_count = q.count()
     first_flitser = q.first()
