@@ -42,7 +42,7 @@ class Melding(db.Model):
     weer_bewolking_procent = db.Column(db.Integer)
     weer_regen_mm = db.Column(db.Float)
     weer_sneeuw_mm = db.Column(db.Float)
-    weer_zonnestand = db.Column(db.Enum(ZONNESTANDEN))
+    weer_zonnestand = db.Column(db.Enum(*ZONNESTANDEN))
     weer_locatie_naam = db.Column(db.String)
 
 

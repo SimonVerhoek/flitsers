@@ -1,6 +1,7 @@
 *.pyc
 *.json
 *.DS_Store
+.idea
 
 # databases & dumps
 *.db
