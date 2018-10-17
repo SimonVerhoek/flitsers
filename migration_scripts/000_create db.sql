@@ -8,9 +8,6 @@ CREATE TABLE melding(
 	type_controle VARCHAR NOT NULL,
 	tijd_van_melden VARCHAR NOT NULL,
 	details VARCHAR,
-	laatste_activiteit TIME WITHOUT TIME ZONE,
-	locatie VARCHAR,
-	locatie_lat NUMERIC,
-	locatie_lon NUMERIC
+	laatste_activiteit TIME WITHOUT TIME ZONE
 );
 	

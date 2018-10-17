@@ -1,0 +1,14 @@
+# folders
+.idea
+.git
+__pycache__
+
+# files
+.env
+*.pyc
+.gitignore
+.DS_Store
+.gitlab-ci.yml
+Dockerfile.*
+docker-compose.*
+README.md

@@ -10,6 +10,8 @@
 
 # credentials
 credentials.py
+.env-db
+.env
 
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html

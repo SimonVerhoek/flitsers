@@ -1,0 +1,26 @@
+version: '3'
+services:
+  flitserdata:
+    container_name: flitserdata
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/flitserdata
+    ports:
+      - "5000:5000"
+    depends_on:
+      - testdb
+
+  testdb:
+    image: postgres:11-alpine
+    container_name: testdb
+    restart: always
+    volumes:
+    - ./migration_scripts/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env-db
+    healthcheck:
+      test: pg_isready

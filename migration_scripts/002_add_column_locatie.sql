@@ -1,1 +1,1 @@
-ALTER TABLE melding ADD COLUMN locatie STRING;
+ALTER TABLE melding ADD COLUMN locatie VARCHAR;
