@@ -1,8 +1,8 @@
 FROM python:3.7-stretch
 
-WORKDIR flitsers
+WORKDIR flitserdata
 
-COPY requirements-flitsers.txt /flitsers/
+COPY requirements-flitsers.txt /flitserdata/
 
 RUN apt-get update \
     && apt-get install -y build-essential bash vim \
@@ -10,7 +10,7 @@ RUN apt-get update \
     && pip3 install --no-cache-dir -r requirements-flitsers.txt \
     && rm -r /root/.cache
 
-COPY . /flitsers
+COPY . /flitserdata
 
 EXPOSE 5000
 

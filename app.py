@@ -5,7 +5,7 @@ from flask import render_template, request
 from sqlalchemy import or_, func
 
 from model import app, MeldingSchema, Melding
-from consts import TIME_SLOTS, RADAR, LASER, ANPR, CONTROLE_TYPES
+from consts import TIME_SLOTS, CONTROLE_TYPES
 
 
 meldingen_schema = MeldingSchema(many=True)
@@ -23,10 +23,9 @@ def home():
 
     time_slots = [t.title for t in TIME_SLOTS]
 
-    # [0] for sending without metadata like 'errors'
     return render_template(
         'content.html',
-        flitsers_today=meldingen_schema.dump(flitsers_today)[0],
+        flitsers_today=meldingen_schema.dump(flitsers_today),
         flitsers_total_count=flitsers_total_count,
         first_flitser_date=first_flitser.datum,
         datasets=datasets,
