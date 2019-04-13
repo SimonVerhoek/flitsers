@@ -1,8 +1,8 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from flask import render_template, request
-from sqlalchemy import or_, func
+from sqlalchemy import or_
 
 from model import app, MeldingSchema, Melding
 from consts import TIME_SLOTS, CONTROLE_TYPES

@@ -17,3 +17,7 @@ for matview in $materialized_views; do
     echo $matview
     psql -U $db_user $db_name -c "REFRESH MATERIALIZED VIEW $matview;"
 done
+
+
+# recreate id sequence on melding table
+psql -U postgres flitserdata -c "CREATE SEQUENCE melding_id_seq; ALTER TABLE melding ALTER COLUMN id SET DEFAULT nextval('melding_id_seq'); SELECT setval('melding_id_seq', COALESCE((SELECT MAX(id)+1 FROM melding), 1), false);"

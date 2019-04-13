@@ -1,14 +1,9 @@
 #!/usr/bin/python
 import time
-import os
-import urllib2
-from urllib2 import urlopen
-from datetime import datetime
-from json import dump
 
 from bs4 import BeautifulSoup
-import schedule
 import logging
+import requests
 
 from model import *
 from scrapefunctions import \
@@ -20,7 +15,6 @@ from scrapefunctions import \
     get_details, \
     get_hm_paal_coordinates, \
     get_weather
-from consts import FILENAME
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
 from credentials import SCRAPE_URL
 
@@ -28,26 +22,17 @@ from credentials import SCRAPE_URL
 def get_flitsers():
     today = datetime.today().strftime('%Y-%m-%d')
 
-    hdr = {
-        "User-Agent": "Mozilla/5.0",
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    }
-    req = urllib2.Request(SCRAPE_URL, headers=hdr)
-
     try:
-        page = urlopen(req)
-    except urllib2.HTTPError, e:
-        print e.fp.read()
-
-    try:
-        scrape_flitsers(page=page, today=today)
-    except:
-        print 'scraping failed at {}'.format(datetime.today())
-        logging.warning('scraping failed at {}'.format(datetime.today()))
+        page_obj = requests.get(SCRAPE_URL)
+        scrape_flitsers(page_obj=page_obj, today=today)
+    except requests.exceptions.RequestException as e:
+        msg = f'scraping failed at {datetime.today()}: {e}'
+        print(msg)
+        logging.error(msg)
 
 
-def scrape_flitsers(page, today):
-    soup = BeautifulSoup(page, "html.parser")
+def scrape_flitsers(page_obj, today):
+    soup = BeautifulSoup(page_obj.text, 'html.parser')
     meldingen = soup.find_all(MELDING_HTML_ELEMENT, MELDING_HTML)
 
     new_meldingen = 0
@@ -134,7 +119,7 @@ def scrape_flitsers(page, today):
             new_meldingen += 1
         db.session.commit()
 
-    print 'scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen)
+    print('scraping succeeded at {}: {} new meldingen added'.format(datetime.today(), new_meldingen))
 
 
 if __name__ == '__main__':

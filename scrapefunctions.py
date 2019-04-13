@@ -1,9 +1,7 @@
 import re
-import urllib2
-import time
 from datetime import datetime
-from urllib2 import urlopen
 
+import logging
 import socks
 import socket
 import requests
@@ -21,7 +19,6 @@ from consts import \
     BEIDE, \
     CONTROLE_TYPES, \
     HM_PAAL_URL, \
-    HM_PAAL_WEG_URL, \
     OPENWEATHER_API_URL, \
     VOOR_ZONSOPGANG, \
     NA_ZONSOPGANG, \
@@ -89,7 +86,7 @@ def get_hm_paal_coordinates(melding):
     url = HM_PAAL_URL + melding.wegnummer + '/' + hm_paal + '/'
 
     page = get_hm_paal_page(url)
-    soup = BeautifulSoup(page, "html.parser")
+    soup = BeautifulSoup(page.text, "html.parser")
 
     coordinateList = None
 
@@ -99,8 +96,8 @@ def get_hm_paal_coordinates(melding):
         coordinates = coordinates[start:]
 
         coordinateList = coordinates.split(',')
-        for coordinate in coordinateList:
-            coordinate = float(coordinate)
+
+        [float(coordinate) for coordinate in coordinateList]
 
     return coordinateList
 
@@ -110,17 +107,13 @@ def get_hm_paal_page(url):
     socks.setdefaultproxy(proxy_type=socks.PROXY_TYPE_SOCKS5, addr="127.0.0.1", port=9050)
     socket.socket = socks.socksocket
 
-    hdr = {
-        "User-Agent": "Mozilla/5.0",
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    }
-    req = urllib2.Request(url, headers=hdr)
-
     try:
-        page = urlopen(req)
+        page = requests.get(url)
         return page
-    except urllib2.HTTPError, e:
-        print e.fp.read()
+    except requests.exceptions.RequestException as e:
+        msg = f'hm_paal scraping failed: {e}'
+        print(msg)
+        logging.error(msg)
 
 
 def get_weather(lat, lon, time_unix):
@@ -134,16 +127,14 @@ def get_weather(lat, lon, time_unix):
     r = requests.get(OPENWEATHER_API_URL, params=params)
     data = r.json()
 
-    rain = data['rain']['3h'] if 'rain' in data else None
-    snow = data['snow']['3h'] if 'snow' in data else None
+    rain = data['rain']['1h'] if 'rain' in data else None
+    snow = data['snow']['1h'] if 'snow' in data else None
 
-    zonnestand = None
+    zonnestand = NA_ZONSOPGANG
     if time_unix <= data['sys']['sunrise']:
         zonnestand = VOOR_ZONSOPGANG
     elif time_unix >= data['sys']['sunset']:
         zonnestand = NA_ZONSONDERGANG
-    else:
-        zonnestand = NA_ZONSOPGANG
 
     return {
         'type': data['weather'][0]['main'],
@@ -161,19 +152,3 @@ def get_weather(lat, lon, time_unix):
         'zonnestand': zonnestand,
         'locatie_naam': data['name'],
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
