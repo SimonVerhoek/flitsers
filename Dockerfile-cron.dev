@@ -1,0 +1,22 @@
+#################################################################
+# Dockerfile to build test container for cron jobs
+#################################################################
+FROM python:3.7-stretch
+
+WORKDIR cron
+
+COPY requirements-cron-dev.txt /cron/
+
+RUN apt-get update \
+    && apt-get install -y build-essential bash cron vim tor \
+    && pip3 install --upgrade pip setuptools \
+    && pip3 install --no-cache-dir -r requirements-cron-dev.txt \
+    && rm -r /root/.cache
+
+COPY model.py /cron/
+COPY scraper.py /cron/
+COPY scrapefunctions.py /cron/
+COPY consts.py /cron/
+COPY credentials.py /cron/
+
+CMD tor
