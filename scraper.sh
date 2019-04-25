@@ -17,5 +17,5 @@ source $HOME/.profile
 
 # production
 echo 'Starting scraper...'
-source ~/.virtualenvs/flitserdata/bin/activate
-python ~/flitsers/scraper.py
+source ~/.virtualenvs/flitserdata3/bin/activate
+python3.7 ~/flitsers/scraper.py

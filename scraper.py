@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import time
 
 from bs4 import BeautifulSoup
