@@ -1,8 +1,7 @@
-from datetime import datetime
+from datetime import datetime, time, date
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from marshmallow import Schema, fields
 
 from credentials import DATABASE_URL
 from consts import ZONNESTANDEN
@@ -14,8 +13,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+class DictSerializable(object):
+    def _asdict(self):
+        result = dict()
+        for key in self.__mapper__.c.keys():
+            value = getattr(self, key)
+            if isinstance(value, datetime) or isinstance(value, time) or isinstance(value, date):
+                value = value.isoformat()
+            result[key] = value
+        return result
+
+
 """ MODELS """
-class Melding(db.Model):
+class Melding(db.Model, DictSerializable):
     __tablename__ = 'melding'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     datum = db.Column(db.DateTime, nullable=False, default=datetime.now())
@@ -52,37 +62,6 @@ class Town(db.Model):
     name = db.Column(db.String)
     municipality = db.Column(db.String)
     province = db.Column(db.String)
-
-
-""" SCHEMAS (for JSON-serialization) """
-class MeldingSchema(Schema):
-    id = fields.Integer()
-    datum = fields.Date()
-    soort_weg = fields.String()
-    wegnummer = fields.String()
-    zijde = fields.String()
-    hm_paal = fields.String()
-    type_controle = fields.String()
-    tijd_van_melden = fields.Time(format='%H-%m-%s')
-    details = fields.String()
-    laatste_activiteit = fields.DateTime()
-    locatie = fields.String()
-    locatie_lat = fields.Float()
-    locatie_lon = fields.Float()
-    weer_type = fields.String()
-    weer_beschrijving = fields.String()
-    weer_temp = fields.Float()
-    weer_temp_max = fields.Float()
-    weer_temp_min = fields.Float()
-    weer_luchtdruk_hpa = fields.Integer()
-    weer_luchtvochtigheid_procent = fields.Integer()
-    weer_windsnelheid_m_per_sec = fields.Float()
-    weer_windrichting_graden = fields.Integer()
-    weer_bewolking_procent = fields.Integer()
-    weer_regen_mm = fields.Float()
-    weer_sneeuw_mm = fields.Float()
-    weer_zonnestand = fields.String()
-    weer_locatie_naam = fields.String()
 
 
 # create db with above classes as tables
