@@ -10,18 +10,13 @@ var GMap = {
 
 		// init slider bar
 		var lower_bound = moment(first_flitser_date).toDate();
-		var upper_bound = moment().endOf('day').toDate()
+		var upper_bound = moment().endOf('day').toDate();
 
 		Slider.init(lower_bound, upper_bound);
-
-		// show today's flitsers on initialisation
-		var today = moment().format('YYYY-MM-DD');
-		var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
 
 		// create flitsers
 		for (var i = 0; i < flitsers_today.length; i++) {
             var flitser = new Flitser(flitsers_today[i]);
-            flitser.updateVisibility(yesterday, today);
             flitsers_today_obj.push(flitser);
 		}
 	}
@@ -39,27 +34,17 @@ var Flitser = function(obj) {
 		var marker = new google.maps.Marker({
 			position: latLng
 		});
+		marker.setMap(map);
 
 		var content = this.getContent();
 
-		google.maps.event.addListener(marker, 'click', function(){
-	    infowindow.close();
-	    infowindow.setContent( content );
-	    infowindow.open(map, marker);
-	  });
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.close();
+			infowindow.setContent( content );
+			infowindow.open(map, marker);
+		});
 
-	  this.marker = marker;
-	};
-
-	this.updateVisibility = function(date_min, date_max) {
-		var date_min = moment(date_min).format('YYYY-MM-DD');
-		var date_max = moment(date_max).format('YYYY-MM-DD');
-
-		if (this.datum >= date_min && this.datum <= date_max) {
-			this.marker.setMap(map);
-		} else {
-			this.marker.setMap(null);
-		}
+		this.marker = marker;
 	};
 
 	this.initMarker();
@@ -76,27 +61,27 @@ Flitser.prototype.getContent = function() {
 	}
 
 	var content = [
-	  "<div id='InfoWindow'>",
-	  "	<table id='InfoWindow-table'>",
-	  "		<tbody>",
-	  "			<tr>",
-	  "				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
-	  "			</tr>",
-	  "			<tr>",
-	  "				<td>Type this:</td><td>" + this.type_controle + "</td>",
-	  "			</tr>",
-	  "			<tr>",
-	  "				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
-	  "			</tr>",
-	  "			<tr>",
-	  "				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
-	  "			</tr>",
-	  "			<tr>",
-	  "				<td>Weer:</td><td>" + weather_conditions + "</td>",
-	  "			</tr>",
-	  "		</tbody>",
-	  "	</table>",
-	  "</div>"
+		"<div id='InfoWindow'>",
+		"	<table id='InfoWindow-table'>",
+		"		<tbody>",
+		"			<tr>",
+		"				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
+		"			</tr>",
+		"			<tr>",
+		"				<td>Type this:</td><td>" + this.type_controle + "</td>",
+		"			</tr>",
+		"			<tr>",
+		"				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
+		"			</tr>",
+		"			<tr>",
+		"				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
+		"			</tr>",
+		"			<tr>",
+		"				<td>Weer:</td><td>" + weather_conditions + "</td>",
+		"			</tr>",
+		"		</tbody>",
+		"	</table>",
+		"</div>"
 	].join("\n");
 
 	return content;
@@ -122,45 +107,30 @@ var Slider = {
 	}
 };
 
+
 var TimeChart = {
 	ctx: $('#chart'),
 	chart: null,
 	options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  },
-  init: function() {
+		scales: {
+			yAxes: [{
+				stacked: true
+			}]
+		}
+  	},
+	init: function() {
 		TimeChart.chart = new Chart(TimeChart.ctx, {
-		  type: 'bar',
-		  data: {
-		    labels: time_slots,
-		    datasets: datasets
-		  },
-  		options: TimeChart.options
+			type: 'bar',
+			data: {
+				labels: time_slots,
+				datasets: datasets
+			},
+			options: TimeChart.options
 		});
 	},
 
-	update(start, stop) {
-		var start_str = moment(start).format('YYYY-MM-DD');
-		var stop_str = moment(stop).format('YYYY-MM-DD');
-
-		var params = {
-			start: start_str,
-			stop: stop_str
-		};
-		$.ajax({
-			url: '/get_chart_data',
-			type: 'POST',
-			dataType: 'json',
-			contentType: 'application/json;charset=UTF-8',
-			data: JSON.stringify(params, null, '\t'),
-			success: function(data) {
-				TimeChart.chart.config.data.datasets = data.datasets;
-				TimeChart.chart.update();
-			}
-		});
+	update(datasets) {
+		TimeChart.chart.config.data.datasets = datasets;
+		TimeChart.chart.update();
 	}
 };

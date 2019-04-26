@@ -33,19 +33,29 @@ def home():
     )
 
 
-@app.route('/get_flitser_data')
-def get_all_flitsers():
-    q = Melding.query.all()
+@app.route('/get_chart_data', methods=['POST'])
+def get_chart_data():
+    base_q = Melding.query
+
+    # if start and stop given as input from frontend, only query those
+    args = request.json
+    if args:
+        moment_start = args['start']
+        moment_stop = args['stop']
+
+        base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
+
+    datasets = get_datasets(query=base_q)
 
     flitsers = []
-    for flitser in q:
+    for flitser in base_q:
         laatste_activiteit = None
         if flitser.laatste_activiteit:
             laatste_activiteit = flitser.laatste_activiteit.isoformat()
 
         flitsers.append({
             'id': flitser.id,
-            'datum':flitser.datum.isoformat(),
+            'datum': flitser.datum.isoformat(),
             'soort_weg': flitser.soort_weg,
             'wegnummer': flitser.wegnummer,
             'zijde': flitser.zijde,
@@ -73,26 +83,8 @@ def get_all_flitsers():
         })
 
     return json.dumps({
-        'flitsers': flitsers,
-    })
-
-
-@app.route('/get_chart_data', methods=['POST'])
-def get_chart_data():
-    base_q = Melding.query
-
-    # if start and stop given as input from frontend, only query those
-    args = request.json
-    if args:
-        moment_start = args['start']
-        moment_stop = args['stop']
-
-        base_q = base_q.filter(Melding.datum.between(moment_start, moment_stop))
-
-    datasets = get_datasets(query=base_q)
-
-    return json.dumps({
-        'datasets': datasets
+        'datasets': datasets,
+        'flitsers': flitsers
     })
 
 
