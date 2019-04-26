@@ -13,13 +13,14 @@ meldingen_schema = MeldingSchema(many=True)
 @app.route('/')
 def home():
     q = Melding.query
+
+    flitsers_total_count = q.count()
+    first_flitser = q.filter_by(id=1).first()
+
     q_today = q.filter_by(datum=datetime.now().date())
     flitsers_today = q_today.all()
 
     datasets = get_datasets(query=q_today)
-
-    flitsers_total_count = q.count()
-    first_flitser = q.first()
 
     time_slots = [t.title for t in TIME_SLOTS]
 
