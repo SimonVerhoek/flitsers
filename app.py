@@ -1,7 +1,10 @@
+import os
 from datetime import datetime
+from typing import List
 
 from flask import render_template, request, jsonify
 from sqlalchemy import or_
+from sqlalchemy.orm.query import Query
 
 from model import app, Melding
 from consts import TIME_SLOTS, CONTROLE_TYPES
@@ -27,7 +30,8 @@ def home():
         flitsers_total_count=flitsers_total_count,
         first_flitser_date=first_flitser.datum,
         datasets=datasets,
-        time_slots=time_slots
+        time_slots=time_slots,
+        last_updated=dir_last_updated('static/js')
     )
 
 
@@ -53,7 +57,13 @@ def get_chart_data():
     })
 
 
-def get_datasets(query):
+def get_datasets(query: Query) -> List[dict]:
+    """
+    Prepares datasets for bar chart.
+
+    :param query:   a Query object for Melding objects
+    :return:        Melding object data per type_controle
+    """
     datasets = []
 
     for type_controle in CONTROLE_TYPES:
@@ -82,6 +92,21 @@ def get_datasets(query):
     return datasets
 
 
+def dir_last_updated(folder: str) -> str:
+    """
+    Creates a string with the given folder's last update time.
+    Is used for JS file versioning.
+    Big thanks to: https://stackoverflow.com/questions/41144565/flask-does-not-see-change-in-js-file#answer-54164514
+
+    :param folder:  a static folder that should be versioned
+    :return:        a new version number
+    """
+    return str(max(os.path.getmtime(os.path.join(root_path, f))
+               for root_path, dirs, files in os.walk(folder)
+               for f in files))
+
+
 if __name__ == '__main__':
     app.debug = True
+    app.threaded = True
     app.run(host='0.0.0.0')
