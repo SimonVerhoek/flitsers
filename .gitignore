@@ -9,7 +9,6 @@
 *.dump
 
 # credentials
-credentials.py
 .env-db
 .env
 

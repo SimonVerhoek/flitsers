@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import datetime
 
@@ -23,7 +24,6 @@ from consts import \
     VOOR_ZONSOPGANG, \
     NA_ZONSOPGANG, \
     NA_ZONSONDERGANG
-from credentials import OPENWEATHER_APP_ID
 
 
 def get_wegnummer(melding, wegnummer_id):
@@ -118,7 +118,7 @@ def get_hm_paal_page(url):
 
 def get_weather(lat, lon, time_unix):
     params = {
-        'APPID': OPENWEATHER_APP_ID,
+        'APPID': os.getenv('OPENWEATHER_APP_ID'),
         'units': 'metric',
         'lang': 'nl',
         'lat': lat,

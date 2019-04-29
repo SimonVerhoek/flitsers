@@ -17,6 +17,5 @@ COPY model.py /cron/
 COPY scraper.py /cron/
 COPY scrapefunctions.py /cron/
 COPY consts.py /cron/
-COPY credentials.py /cron/
 
 CMD tor

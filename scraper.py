@@ -1,10 +1,11 @@
+import os
 import time
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 import logging
 import requests
 
-from model import *
 from scrapefunctions import \
     get_zijde, \
     get_wegnummer, \
@@ -15,19 +16,23 @@ from scrapefunctions import \
     get_hm_paal_coordinates, \
     get_weather
 from consts import MELDING_HTML_ELEMENT, MELDING_HTML, SNELWEG, REGIONALE_WEG
-from credentials import SCRAPE_URL
+from model import db, Melding
 
 
 def get_flitsers():
     today = datetime.today().strftime('%Y-%m-%d')
 
     try:
-        page_obj = requests.get(SCRAPE_URL)
+        page_obj = requests.get(os.getenv('SCRAPE_URL'))
         scrape_flitsers(page_obj=page_obj, today=today)
     except requests.exceptions.RequestException as e:
         msg = f'scraping failed at {datetime.today()}: {e}'
         print(msg)
         logging.error(msg)
+
+    # for local development
+    # page_obj = requests.get(os.getenv('SCRAPE_URL'))
+    # scrape_flitsers(page_obj=page_obj, today=today)
 
 
 def scrape_flitsers(page_obj, today):
