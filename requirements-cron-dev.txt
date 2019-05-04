@@ -6,3 +6,4 @@ beautifulsoup4==4.7.1
 requests==2.21.0
 PySocks==1.6.8
 python-dotenv==0.10.1
+fake-useragent==0.1.11

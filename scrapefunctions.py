@@ -127,8 +127,10 @@ def get_weather(lat, lon, time_unix):
     r = requests.get(OPENWEATHER_API_URL, params=params)
     data = r.json()
 
-    rain = data['rain']['1h'] if 'rain' in data else None
-    snow = data['snow']['1h'] if 'snow' in data else None
+    # Openweather API rain & snow key seems to vary between "1h" and "3h",
+    # so if it exists just get the first value found and be done with it
+    rain = list(data['rain'].values())[0] if 'rain' in data else None
+    snow = list(data['snow'].values())[0] if 'snow' in data else None
 
     zonnestand = NA_ZONSOPGANG
     if time_unix <= data['sys']['sunrise']:

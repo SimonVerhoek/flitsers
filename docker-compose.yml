@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile-cron.dev
     volumes:
-      - .:/flitserdata
+      - .:/cron
     env_file:
       - .env
     depends_on:
