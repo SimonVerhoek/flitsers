@@ -1,96 +1,92 @@
-var GMap = {
-	init: function() {
-		var Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
+const GMap = {
+	map: {},
 
-		map = new google.maps.Map(document.getElementById('map'), {
+	init() {
+		const Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
+
+		this.map = new google.maps.Map(document.getElementById('map'), {
 			center: Nederland,
 			zoom: 8,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
 
-		// init slider bar
-		var lower_bound = moment(first_flitser_date).toDate();
-		var upper_bound = moment().endOf('day').toDate();
-
-		Slider.init(lower_bound, upper_bound);
+		this.infowindow = new google.maps.InfoWindow();
 
 		// create flitsers
-		for (var i = 0; i < flitsers_today.length; i++) {
-            var flitser = new Flitser(flitsers_today[i]);
-            flitsers_today_obj.push(flitser);
+		for (let i = 0; i < flitsers_today.length; i++) {
+			const flitser = new Flitser(flitsers_today[i]);
+			flitsers_today_obj.push(flitser);
 		}
 	}
 };
 
 
-var Flitser = function(obj) {
-	this.marker = {};
+class Flitser {
+	constructor(obj) {
+		// get properties of given JSON object
+		Object.assign(this, obj);
 
-	// get properties of given JSON object
-	for (var prop in obj) this[prop] = obj[prop];
-
-	this.initMarker = function() {
-		var latLng = new google.maps.LatLng(this.locatie_lat, this.locatie_lon);
-		var marker = new google.maps.Marker({
-			position: latLng
+		const marker = new google.maps.Marker({
+			position: new google.maps.LatLng(this.locatie_lat, this.locatie_lon),
+			map: GMap.map
 		});
-		marker.setMap(map);
 
-		var content = this.getContent();
+		const content = this.getContent();
 
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.close();
-			infowindow.setContent( content );
-			infowindow.open(map, marker);
+		marker.addListener('click', function () {
+			GMap.infowindow.close();
+			GMap.infowindow.setContent(content);
+			GMap.infowindow.open(GMap.map, marker);
 		});
 
 		this.marker = marker;
-	};
-
-	this.initMarker();
-};
-Flitser.prototype.getContent = function() {
-	var weather_conditions = 'Onbekend';
-	if (this.weer_beschrijving != null && this.weer_temp != null) {
-		weather_conditions = this.weer_beschrijving + ", " + this.weer_temp + "&deg;C";
 	}
 
-	var last_activity = 'Onbekend';
-	if (this.laatste_activiteit != null) {
-		last_activity = this.laatste_activiteit.substring(0, 8)
+	getContent() {
+		let weather_conditions = 'Onbekend';
+		if (this.weer_beschrijving != null && this.weer_temp != null) {
+			weather_conditions = this.weer_beschrijving + ", " + this.weer_temp + "&deg;C";
+		}
+
+		let last_activity = 'Onbekend';
+		if (this.laatste_activiteit != null) {
+			last_activity = this.laatste_activiteit.substring(0, 8)
+		}
+
+		const content = [
+			"<div id='InfoWindow'>",
+			"	<table id='InfoWindow-table'>",
+			"		<tbody>",
+			"			<tr>",
+			"				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
+			"			</tr>",
+			"			<tr>",
+			"				<td>Type:</td><td>" + this.type_controle + "</td>",
+			"			</tr>",
+			"			<tr>",
+			"				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
+			"			</tr>",
+			"			<tr>",
+			"				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
+			"			</tr>",
+			"			<tr>",
+			"				<td>Weer:</td><td>" + weather_conditions + "</td>",
+			"			</tr>",
+			"		</tbody>",
+			"	</table>",
+			"</div>"
+		].join("\n");
+
+		return content;
 	}
-
-	var content = [
-		"<div id='InfoWindow'>",
-		"	<table id='InfoWindow-table'>",
-		"		<tbody>",
-		"			<tr>",
-		"				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
-		"			</tr>",
-		"			<tr>",
-		"				<td>Type this:</td><td>" + this.type_controle + "</td>",
-		"			</tr>",
-		"			<tr>",
-		"				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
-		"			</tr>",
-		"			<tr>",
-		"				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
-		"			</tr>",
-		"			<tr>",
-		"				<td>Weer:</td><td>" + weather_conditions + "</td>",
-		"			</tr>",
-		"		</tbody>",
-		"	</table>",
-		"</div>"
-	].join("\n");
-
-	return content;
-};
+}
 
 
-var Slider = {
-	init: function(lower_bound, upper_bound) {
-		$(sliderElement).dateRangeSlider({
+const Slider = {
+	elem: $('#slider'),
+
+	init(lower_bound, upper_bound) {
+		this.elem.dateRangeSlider({
 			bounds: {
 				min: lower_bound,
 				max: upper_bound,
@@ -102,13 +98,13 @@ var Slider = {
 		});
 	},
 
-	update: function(lower_bound, upper_bound) {
-		$(sliderElement).dateRangeSlider('values', lower_bound, upper_bound);
+	update(lower_bound, upper_bound) {
+		this.elem.dateRangeSlider('values', lower_bound, upper_bound);
 	}
 };
 
 
-var TimeChart = {
+const TimeChart = {
 	ctx: $('#chart'),
 	chart: null,
 	options: {
@@ -117,20 +113,30 @@ var TimeChart = {
 				stacked: true
 			}]
 		}
-  	},
-	init: function() {
-		TimeChart.chart = new Chart(TimeChart.ctx, {
+	},
+
+	init() {
+		this.chart = new Chart(this.ctx, {
 			type: 'bar',
 			data: {
 				labels: time_slots,
 				datasets: datasets
 			},
-			options: TimeChart.options
+			options: this.options
 		});
 	},
 
 	update(datasets) {
-		TimeChart.chart.config.data.datasets = datasets;
-		TimeChart.chart.update();
+		this.chart.config.data.datasets = datasets;
+		this.chart.update();
 	}
 };
+
+
+class PeriodButton {
+	constructor(elem, unit, subtract_type = 'days', subtract = 0) {
+		this.elem = elem;
+		this.start = moment().subtract(subtract, subtract_type).startOf(unit).toDate();
+		this.stop = moment().subtract(subtract, subtract_type).endOf(unit).toDate();
+	}
+}
