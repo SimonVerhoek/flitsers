@@ -15,7 +15,7 @@ def home():
     q = Melding.query
 
     flitsers_total_count = q.count()
-    first_flitser = q.filter_by(id=1).first()
+    first_flitser = q.order_by(Melding.datum).first()
 
     q_today = q.filter_by(datum=datetime.now().date())
     flitsers_today = q_today.all()

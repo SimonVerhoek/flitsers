@@ -8,7 +8,7 @@ db_name=`printenv POSTGRES_DB`
 tables=$(psql -U $db_user -h $db_host $db_name -A -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
 for table in $tables; do
     echo $table
-    psql -U $db_user -h $db_host $db_name -c "\copy (SELECT * FROM $table) TO STDOUT" | \
+    psql -U $db_user -h $db_host $db_name -c "\copy (SELECT * FROM $table ORDER BY id DESC LIMIT 500) TO STDOUT" | \
     psql -U $db_user $db_name -c "\copy $table FROM STDIN"
 done
 
