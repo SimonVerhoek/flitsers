@@ -45,7 +45,7 @@ class Flitser {
 	getContent() {
 		let weather_conditions = 'Onbekend';
 		if (this.weer_beschrijving != null && this.weer_temp != null) {
-			weather_conditions = this.weer_beschrijving + ", " + this.weer_temp + "&deg;C";
+			weather_conditions = `${this.weer_beschrijving}, ${this.weer_temp}&deg;C`;
 		}
 
 		let last_activity = 'Onbekend';
@@ -53,31 +53,29 @@ class Flitser {
 			last_activity = this.laatste_activiteit.substring(0, 8)
 		}
 
-		const content = [
-			"<div id='InfoWindow'>",
-			"	<table id='InfoWindow-table'>",
-			"		<tbody>",
-			"			<tr>",
-			"				<td>Datum:</td><td>" + moment(this.datum).format('DD-MM-YYYY') + "</td>",
-			"			</tr>",
-			"			<tr>",
-			"				<td>Type:</td><td>" + this.type_controle + "</td>",
-			"			</tr>",
-			"			<tr>",
-			"				<td>Locatie:</td><td>" + this.wegnummer + " (" + this.soort_weg + "), hectometerpaal " + this.hm_paal + "</td>",
-			"			</tr>",
-			"			<tr>",
-			"				<td>Activiteit:</td><td>van " + this.tijd_van_melden + " tot " + last_activity + "</td>",
-			"			</tr>",
-			"			<tr>",
-			"				<td>Weer:</td><td>" + weather_conditions + "</td>",
-			"			</tr>",
-			"		</tbody>",
-			"	</table>",
-			"</div>"
-		].join("\n");
-
-		return content;
+		return `
+			<div id='InfoWindow'>
+				<table id='InfoWindow-table'>
+					<tbody>
+						<tr>
+							<td>Datum:</td><td>${moment(this.datum).format('DD-MM-YYYY')}</td>
+						</tr>
+						<tr>
+							<td>Type:</td><td>${this.type_controle}</td>
+						</tr>
+						<tr>
+							<td>Locatie:</td><td>${this.wegnummer} (${this.soort_weg}), hectometerpaal ${this.hm_paal}</td>
+						</tr>
+						<tr>
+							<td>Activiteit:</td><td>van  ${this.tijd_van_melden} tot ${last_activity}</td>
+						</tr>
+						<tr>
+							<td>Weer:</td><td>${weather_conditions}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		`;
 	}
 }
 
