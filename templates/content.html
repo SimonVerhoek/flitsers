@@ -1,10 +1,30 @@
 {% extends "index.html" %}
 {% block content %}
     <script type="text/javascript">
-        var flitsers_today = {{ flitsers_today|tojson }};
-        var first_flitser_date = "{{ first_flitser_date }}";
-        var datasets = {{ datasets|tojson }};
-        var time_slots = {{ time_slots|tojson }};
+        backendData = {
+          todays_speed_cams: {{ flitsers_today|tojson }},
+          first_speed_cam_date: {{ first_flitser_date|tojson }},
+          datasets: {{ datasets|tojson }},
+          time_slots: {{ time_slots|tojson }},
+
+          getSpeedingCamData(date_min, date_max) {
+            return new Promise((resolve, reject) => {
+              $.ajax({
+                url: '/get_chart_data',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({start: date_min, stop: date_max}),
+                success: function (data) {
+                  resolve(data);
+                },
+                error: function () {
+                  reject('Failed to load new data!')
+                }
+              });
+            })
+          }
+        }
     </script>
 
     <div class="row">

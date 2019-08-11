@@ -1,5 +1,6 @@
 const GMap = {
 	map: {},
+	speeding_cams: [],
 
 	init() {
 		const Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
@@ -12,16 +13,38 @@ const GMap = {
 
 		this.infowindow = new google.maps.InfoWindow();
 
-		// create flitsers
-		for (let i = 0; i < flitsers_today.length; i++) {
-			const flitser = new Flitser(flitsers_today[i]);
-			flitsers_today_obj.push(flitser);
+		for (let item of backendData.todays_speed_cams) {
+			const speeding_cam = new SpeedingCam(item);
+			this.speeding_cams.push(speeding_cam)
 		}
+	},
+
+	updateSpeedingCamsOnMap(date_min, date_max) {
+		const _this = this;
+
+		for (let speeding_cam of _this.speeding_cams) {
+			speeding_cam.marker.setMap(null);
+		}
+		_this.speeding_cams.length = 0;
+
+		backendData.getSpeedingCamData(date_min, date_max)
+			.then(data => {
+				const new_speeding_cams = data.speeding_cams;
+				for (let item of new_speeding_cams) {
+					if (item.locatie_lat && item.locatie_lon) {
+						const new_speeding_cam = new SpeedingCam(item);
+						_this.speeding_cams.push(new_speeding_cam)
+					}
+				}
+
+				TimeChart.update(data.datasets);
+			})
+			.catch(err => console.log(err));
 	}
 };
 
 
-class Flitser {
+class SpeedingCam {
 	constructor(obj) {
 		// get properties of given JSON object
 		Object.assign(this, obj);
@@ -117,8 +140,8 @@ const TimeChart = {
 		this.chart = new Chart(this.ctx, {
 			type: 'bar',
 			data: {
-				labels: time_slots,
-				datasets: datasets
+				labels: backendData.time_slots,
+				datasets: backendData.datasets
 			},
 			options: this.options
 		});
