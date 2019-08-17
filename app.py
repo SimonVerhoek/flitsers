@@ -22,7 +22,10 @@ def home():
 
     datasets = get_datasets(query=q_today)
 
-    time_slots = [t.title for t in TIME_SLOTS]
+    time_slots = [
+        (t.title, f'({t.start.strftime("%H:%M")}-{t.stop.strftime("%H:%M")}u)')
+        for t in TIME_SLOTS
+    ]
 
     return render_template(
         'content.html',
