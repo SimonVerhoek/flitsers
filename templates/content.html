@@ -129,12 +129,12 @@
                     <td>{{ flitsers_today|length }} flitsers</td>
                 </tr>
                 <tr>
-                    <td>Totaal aantal gemeten flitsers</td>
+                    <td>Totaal aantal gemeten flitsers:</td>
                     <td>{{ flitsers_total_count }}</td>
                 </tr>
                 <tr>
                     <td>Gemeten sinds:</td>
-                    <td>{{ first_flitser_date }}</td>
+                    <td>{{ first_flitser_date.strftime('%d-%m-%Y') }}</td>
                 </tr>
             </table>
         </div>

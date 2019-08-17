@@ -2,7 +2,7 @@ $(document).ready(function() {
 	GMap.init( document.getElementById('map') );
 	TimeChart.init( $('#chart') );
 
-	const lower_bound = moment(backendData.first_speed_cam_date).toDate();
+	const lower_bound = moment(new Date(backendData.first_speed_cam_date)).toDate();
 	const upper_bound = moment().endOf('day').toDate();
 
 	Slider.init($('#slider'), lower_bound, upper_bound);

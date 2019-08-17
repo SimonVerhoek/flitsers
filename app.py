@@ -28,7 +28,7 @@ def home():
         'content.html',
         flitsers_today=[flitser._asdict() for flitser in flitsers_today],
         flitsers_total_count=flitsers_total_count,
-        first_flitser_date=str(first_flitser.datum),
+        first_flitser_date=first_flitser.datum,
         datasets=datasets,
         time_slots=time_slots,
         last_updated=dir_last_updated('static/js')

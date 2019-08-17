@@ -1,3 +1,5 @@
+moment.locale('nl');
+
 const GMap = {
 	map: {},
 	speeding_cams: [],
@@ -117,8 +119,17 @@ const Slider = {
 			defaultValues: {
 				min: upper_bound,
 				max: upper_bound,
-			}
+			},
+			formatter: (date_obj) => this.changeDateFormat(date_obj)
 		});
+	},
+
+	changeDateFormat(date_obj) {
+		const day_name = moment(date_obj).format('ddd');
+		const day = date_obj.getDate();
+		const month = moment.monthsShort()[date_obj.getMonth()];
+		const year = date_obj.getFullYear();
+		return `${day_name} ${day} ${month} ${year}`;
 	},
 
 	update(lower_bound, upper_bound) {
