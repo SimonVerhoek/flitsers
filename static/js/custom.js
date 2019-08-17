@@ -1,14 +1,14 @@
 $(document).ready(function() {
-	GMap.init();
-	TimeChart.init();
+	GMap.init( document.getElementById('map') );
+	TimeChart.init( $('#chart') );
 
 	const lower_bound = moment(backendData.first_speed_cam_date).toDate();
 	const upper_bound = moment().endOf('day').toDate();
 
-	Slider.init(lower_bound, upper_bound);
+	Slider.init($('#slider'), lower_bound, upper_bound);
 
 	// update markers shown
-	Slider.elem.bind('valuesChanged', function(e, data) {
+	Slider.elem.bind('valuesChanged', (e, data) => {
 		TimeChart.update(data.values.min, data.values.max);
 
 		const date_format_str = 'YYYY-MM-DD';
@@ -18,7 +18,7 @@ $(document).ready(function() {
     GMap.updateSpeedingCamsOnMap(date_min_backend, date_max_backend)
 	});
 
-	[...$('button.period_button')].forEach(function (e) {
+	[...$('button.period_button')].forEach((e) => {
 		const button = new PeriodButton(
 			elem = $(e),
 			unit = e.dataset.unit,
@@ -26,8 +26,6 @@ $(document).ready(function() {
 			subtract = e.dataset.subtract
 		);
 
-		button.elem.on('click', function () {
-			Slider.update(button.start, button.stop)
-		})
+		button.elem.on('click', () => Slider.update(button.start, button.stop))
 	});
 });

@@ -1,11 +1,13 @@
 const GMap = {
 	map: {},
 	speeding_cams: [],
+	coordinates: [52.13263300000001, 5.2912659999999505],
 
-	init() {
-		const Nederland = new google.maps.LatLng(52.13263300000001, 5.2912659999999505);
+	init(elem) {
+		const Nederland = new google.maps.LatLng(...this.coordinates);
 
-		this.map = new google.maps.Map(document.getElementById('map'), {
+		this.elem = elem;
+		this.map = new google.maps.Map(this.elem, {
 			center: Nederland,
 			zoom: 8,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -104,9 +106,9 @@ class SpeedingCam {
 
 
 const Slider = {
-	elem: $('#slider'),
+	init(obj, lower_bound, upper_bound) {
+		this.elem = obj;
 
-	init(lower_bound, upper_bound) {
 		this.elem.dateRangeSlider({
 			bounds: {
 				min: lower_bound,
@@ -126,7 +128,6 @@ const Slider = {
 
 
 const TimeChart = {
-	ctx: $('#chart'),
 	chart: null,
 	options: {
 		scales: {
@@ -136,7 +137,8 @@ const TimeChart = {
 		}
 	},
 
-	init() {
+	init(obj) {
+		this.ctx = obj;
 		this.chart = new Chart(this.ctx, {
 			type: 'bar',
 			data: {
@@ -155,9 +157,11 @@ const TimeChart = {
 
 
 class PeriodButton {
-	constructor(elem, unit, subtract_type = 'days', subtract = 0) {
+	constructor(elem, unit, subtract_type, subtract = 0) {
 		this.elem = elem;
-		this.start = moment().subtract(subtract, subtract_type).startOf(unit).toDate();
-		this.stop = moment().subtract(subtract, subtract_type).endOf(unit).toDate();
-	}
+    this.unit = unit;
+    this.subtract = subtract;
+		this.start = moment().subtract(subtract, `${unit}s`).startOf(unit).toDate();
+		this.stop = moment().subtract(subtract, `${unit}s`).endOf(unit).toDate();
+	};
 }
