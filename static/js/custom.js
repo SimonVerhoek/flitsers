@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	GMap.init( document.getElementById('map') );
+	SpeedCamMap.init( document.getElementById('map') );
 	TimeChart.init( $('#chart') );
 
 	const lower_bound = moment(new Date(backendData.first_speed_cam_date)).toDate();
@@ -15,7 +15,7 @@ $(document).ready(function() {
 		const date_min_backend = moment(data.values.min).format(date_format_str);
 		const date_max_backend = moment(data.values.max).format(date_format_str);
 
-    GMap.updateSpeedingCamsOnMap(date_min_backend, date_max_backend)
+    SpeedCamMap.updateSpeedingCamsOnMap(date_min_backend, date_max_backend)
 	});
 
 	[...$('button.period_button')].forEach((e) => {

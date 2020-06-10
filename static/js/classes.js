@@ -1,6 +1,6 @@
 moment.locale('nl');
 
-const GMap = {
+const SpeedCamMap = {
 	map: {},
 	speeding_cams: [],
 	coordinates: [52.13263300000001, 5.2912659999999505],
@@ -31,7 +31,7 @@ const GMap = {
 		const _this = this;
 
 		for (let speeding_cam of _this.speeding_cams) {
-			GMap.map.removeLayer(speeding_cam.marker)
+			SpeedCamMap.map.removeLayer(speeding_cam.marker)
 		}
 		_this.speeding_cams.length = 0;
 
@@ -58,7 +58,7 @@ class SpeedingCam {
 		Object.assign(this, obj);
 
 		if (this.locatie_lat != null && this.locatie_lon != null) {
-			const marker = L.marker([this.locatie_lat, this.locatie_lon]).addTo(GMap.map)
+			const marker = L.marker([this.locatie_lat, this.locatie_lon]).addTo(SpeedCamMap.map)
 
 			const content = this.getContent();
 			marker.bindPopup(content);
