@@ -27,6 +27,8 @@ def home():
         for t in TIME_SLOTS
     ]
 
+    MAPBOX_ACCESS_TOKEN = os.getenv('MAPBOX_ACCESS_TOKEN')
+
     return render_template(
         'content.html',
         flitsers_today=[flitser._asdict() for flitser in flitsers_today],
@@ -34,7 +36,8 @@ def home():
         first_flitser_date=first_flitser.datum,
         datasets=datasets,
         time_slots=time_slots,
-        last_updated=dir_last_updated('static/js')
+        last_updated=dir_last_updated('static/js'),
+        mapbox_acess_token=MAPBOX_ACCESS_TOKEN
     )
 
 

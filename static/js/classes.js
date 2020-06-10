@@ -6,20 +6,24 @@ const GMap = {
 	coordinates: [52.13263300000001, 5.2912659999999505],
 
 	init(elem) {
-		const Nederland = new google.maps.LatLng(...this.coordinates);
-
 		this.elem = elem;
-		this.map = new google.maps.Map(this.elem, {
-			center: Nederland,
-			zoom: 8,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		});
 
-		this.infowindow = new google.maps.InfoWindow();
+		this.map = L.map(this.elem.id).setView(this.coordinates, 8);
+
+		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox/streets-v11',
+			tileSize: 512,
+			zoomOffset: -1,
+			accessToken: backendData.mapbox_access_token
+		}).addTo(this.map);
 
 		for (let item of backendData.todays_speed_cams) {
-			const speeding_cam = new SpeedingCam(item);
-			this.speeding_cams.push(speeding_cam)
+			if (item.locatie_lat != null && item.locatie_lon != null) {
+				const speeding_cam = new SpeedingCam(item);
+				this.speeding_cams.push(speeding_cam)
+			}
 		}
 	},
 
@@ -27,7 +31,7 @@ const GMap = {
 		const _this = this;
 
 		for (let speeding_cam of _this.speeding_cams) {
-			speeding_cam.marker.setMap(null);
+			GMap.map.removeLayer(speeding_cam.marker)
 		}
 		_this.speeding_cams.length = 0;
 
@@ -53,20 +57,14 @@ class SpeedingCam {
 		// get properties of given JSON object
 		Object.assign(this, obj);
 
-		const marker = new google.maps.Marker({
-			position: new google.maps.LatLng(this.locatie_lat, this.locatie_lon),
-			map: GMap.map
-		});
+		if (this.locatie_lat != null && this.locatie_lon != null) {
+			const marker = L.marker([this.locatie_lat, this.locatie_lon]).addTo(GMap.map)
 
-		const content = this.getContent();
+			const content = this.getContent();
+			marker.bindPopup(content);
 
-		marker.addListener('click', function () {
-			GMap.infowindow.close();
-			GMap.infowindow.setContent(content);
-			GMap.infowindow.open(GMap.map, marker);
-		});
-
-		this.marker = marker;
+			this.marker = marker;
+		}
 	}
 
 	getContent() {

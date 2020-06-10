@@ -6,6 +6,7 @@
           first_speed_cam_date: {{ first_flitser_date|tojson }},
           datasets: {{ datasets|tojson }},
           time_slots: {{ time_slots|tojson }},
+          mapbox_access_token: {{ mapbox_acess_token|tojson }},
 
           getSpeedingCamData(date_min, date_max) {
             return new Promise((resolve, reject) => {
@@ -30,9 +31,7 @@
     <div class="row">
         <div class="col-md-8 col-sm-12">
             <div class="row">
-                <div id="map">
-                    <div id="map-canvas"></div>
-                </div>
+                <div id="map"></div>
             </div>
 
             <div class="row extra-space">
