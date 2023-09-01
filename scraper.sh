@@ -8,6 +8,7 @@ tor > /dev/null &
 sleep 15
 
 # echo 'Starting scraper...'
+source venv/bin/activate
 python scraper.py
 
 # echo 'Killing Tor...'
