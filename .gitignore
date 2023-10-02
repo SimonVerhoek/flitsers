@@ -9,8 +9,7 @@
 *.dump
 
 # credentials
-.env-db
-.env
+.env*
 
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html
