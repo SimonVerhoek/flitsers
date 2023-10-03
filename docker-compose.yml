@@ -38,3 +38,19 @@ services:
       - .env-db
     healthcheck:
       test: pg_isready
+
+  jupyter:
+    container_name: flitsers_jupyter
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyter
+    volumes:
+      - ./notebook/config/jupyter_server_config.py:/home/jovyan/.jupyter/jupyter_server_config.py
+      - ./notebook/config/kernel.json:/opt/conda/share/jupyter/kernels/python3/kernel.json
+      - ./notebook/work:/home/jovyan/work
+      - ./notebook/data:/home/jovyan/data
+    ports:
+      - "8888:8888"
+    env_file:
+      - .env-db
+      - .env-jupyter

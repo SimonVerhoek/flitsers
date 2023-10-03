@@ -14,3 +14,6 @@
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html
 app/flitsservice_voorbeeld_files/*
+
+# virtual environment
+venv
