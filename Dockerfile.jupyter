@@ -1,0 +1,24 @@
+# with credit to: https://github.com/vladiuz1/py3-jupyter-docker-compose
+
+# Use the miminal-notebook as base container
+ARG BASE_CONTAINER=jupyter/datascience-notebook:python-3.11.5
+FROM $BASE_CONTAINER
+
+COPY requirements-prod.txt requirements-prod.txt
+COPY requirements-jupyter.txt requirements-jupyter.txt
+
+USER root
+RUN apt-get update \
+    && apt-get install -y graphviz \
+    && pip3 install --upgrade pip setuptools \
+    && pip3 install --no-cache-dir -r requirements-jupyter.txt
+#USER 1001
+
+
+#COPY . /flitserdata
+
+# Install the widgets
+#RUN jupyter nbextension enable --py widgetsnbextension
+
+# The base container takes care of the rest.
+#RUN exec "$@"

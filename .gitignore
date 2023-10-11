@@ -8,9 +8,17 @@
 *.dmp
 *.dump
 
+# other data types
+*.pkl
+*.csv
+*.parquet
+
 # credentials
 .env*
 
 # voorbeeldwebsite
 app/flitsservice_voorbeeld.html
 app/flitsservice_voorbeeld_files/*
+
+# virtual environment
+venv
