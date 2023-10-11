@@ -8,6 +8,11 @@
 *.dmp
 *.dump
 
+# other data types
+*.pkl
+*.csv
+*.parquet
+
 # credentials
 .env*
 

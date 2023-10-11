@@ -7,10 +7,13 @@ FROM $BASE_CONTAINER
 COPY requirements-prod.txt requirements-prod.txt
 COPY requirements-jupyter.txt requirements-jupyter.txt
 
-#RUN apt-get update \
-#    && apt-get install -y build-essential bash vim tor \
-RUN pip3 install --upgrade pip setuptools \
+USER root
+RUN apt-get update \
+    && apt-get install -y graphviz \
+    && pip3 install --upgrade pip setuptools \
     && pip3 install --no-cache-dir -r requirements-jupyter.txt
+#USER 1001
+
 
 #COPY . /flitserdata
 
