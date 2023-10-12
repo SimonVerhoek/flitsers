@@ -2,20 +2,20 @@
 {% block content %}
     <script type="text/javascript">
         backendData = {
-          todays_speed_cams: {{ flitsers_today|tojson }},
-          first_speed_cam_date: {{ first_flitser_date|tojson }},
-          datasets: {{ datasets|tojson }},
-          time_slots: {{ time_slots|tojson }},
-          mapbox_access_token: {{ mapbox_acess_token|tojson }},
+          todays_speed_cams: {{ context.flitsers_today|tojson|safe }},
+          first_speed_cam_date: {{ context.first_flitser.datum|tojson|safe }},
+          datasets: {{ context.datasets|tojson|safe }},
+          time_slots: {{ context.time_slots|tojson|safe }},
+          mapbox_access_token: {{ context.mapbox_acess_token|tojson|safe }},
 
           getSpeedingCamData(date_min, date_max) {
             return new Promise((resolve, reject) => {
               $.ajax({
                 url: '/get_chart_data',
-                type: 'POST',
+                type: 'GET',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify({start: date_min, stop: date_max}),
+                data: {start: date_min, stop: date_max},
                 success: function (data) {
                   resolve(data);
                 },
@@ -121,15 +121,15 @@
             <table class="table">
                 <tr>
                     <td>Vandaag:</td>
-                    <td>{{ flitsers_today|length }} flitsers</td>
+                    <td>{{ context.flitsers_today|length }} flitsers</td>
                 </tr>
                 <tr>
                     <td>Totaal aantal gemeten flitsers:</td>
-                    <td>{{ flitsers_total_count }}</td>
+                    <td>{{ context.flitsers_total_count }}</td>
                 </tr>
                 <tr>
                     <td>Gemeten sinds:</td>
-                    <td>{{ first_flitser_date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ context.first_flitser.datum }}</td>
                 </tr>
             </table>
         </div>

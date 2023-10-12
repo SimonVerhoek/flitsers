@@ -2,6 +2,19 @@ from collections import namedtuple
 from datetime import datetime
 
 
+from environs import Env
+
+
+env = Env()
+env.read_env()
+
+
+"""
+DATABASE
+"""
+DATABASE_URL: str = env.str("DATABASE_URL")
+
+
 """
 FLITSER MELDINGEN
 """
@@ -136,3 +149,9 @@ TIME_SLOTS = (
 	EVENING_RUSH_HOUR,
 	LATE_EVENING,
 )
+
+
+"""
+MAPBOX
+"""
+MAPBOX_ACCESS_TOKEN = env.str('MAPBOX_ACCESS_TOKEN')
