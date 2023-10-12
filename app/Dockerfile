@@ -8,9 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
   PIP_DISABLE_PIP_VERSION_CHECK=on \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_VERSION=1.6.1 \
-  PATH=$PATH:/flitserdata
+  PATH=$PATH:/app
 
-WORKDIR flitserdata
+WORKDIR app
 
 RUN apt-get update \
     && apt-get install -y build-essential bash vim tor \
@@ -25,4 +25,8 @@ ENV PATH="$PATH:/root/.local/bin"
 RUN poetry config virtualenvs.create false
 RUN poetry install
 
-COPY . /flitserdata
+COPY ./app/ /app
+
+
+# Do nothing but keep running
+#ENTRYPOINT ["tail", "-f", "/dev/null"]

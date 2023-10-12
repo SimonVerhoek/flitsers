@@ -4,16 +4,16 @@ services:
     container_name: flitserdata
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./app/Dockerfile
     volumes:
-      - .:/flitserdata
+      - ./app/:/app
     ports:
       - "8000:8000"
     env_file:
       - .env
     stdin_open: true
     tty: true
-    entrypoint: /flitserdata/entrypoint.sh
+    entrypoint: /app/entrypoint.sh
     command: uvicorn app:app --reload --host 0.0.0.0
     depends_on:
       - testdb
