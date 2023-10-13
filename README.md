@@ -1,14 +1,10 @@
-# FLITSERDATA.NL
+# Flitserdata.nl
+Historical data on (mobile) speeding cameras in the Netherlands
 
-## Development
-As the Docker database wants to retrieve data from the remote database, set up a tunnel to your local machine:
-```shell
-ssh <server-name> -L <db_port:host_ip:db_port> -N
-```
-Now, you can run the Docker Compose setup. After initialization, you can close the tunnel.
-  
-For development, you can leave out the `cronjobs` service. 
+There are various sources to see which mobile speeding cameras are at what locations right now, but I could not find 
+any historical data anywhere. So I did what every programmer does at that point: build my own solution :-)  
+Flitserdata.nl tracks the active times and locations of mobile speeding cameras in the Netherlands since January 2016.  
 
-
-## Refresh SSL certificate
-On the server, run `$ certbot`
+The application's code is resided in `/app`. Recently I have been attempting to train a machine learning model to 
+see whether I can predict where and when we can expect mobile speeding cameras tomorrow. This code is resided in 
+`/notebook`.  
