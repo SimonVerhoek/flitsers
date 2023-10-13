@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile-cron.dev
     volumes:
-      - .:/cron
+      - ./app:/cron
     env_file:
       - .env
     depends_on:

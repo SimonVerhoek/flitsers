@@ -1,21 +1,26 @@
 #################################################################
 # Dockerfile to build test container for cron jobs
 #################################################################
-FROM python:3.7-stretch
+FROM python:3.11
 
 WORKDIR cron
 
-COPY requirements-cron-dev.txt /cron/
-
 RUN apt-get update \
     && apt-get install -y build-essential bash cron vim tor \
-    && pip3 install --upgrade pip setuptools \
-    && pip3 install --no-cache-dir -r requirements-cron-dev.txt \
-    && rm -r /root/.cache
+    && pip3 install --upgrade pip setuptools
 
-COPY model.py /cron/
-COPY scraper.py /cron/
-COPY scrapefunctions.py /cron/
-COPY consts.py /cron/
+COPY pyproject.toml poetry.lock ./
+
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=$POETRY_VERSION python3 -
+
+ENV PATH="$PATH:/root/.local/bin"
+
+RUN poetry config virtualenvs.create false
+RUN poetry install
+
+COPY ./app/model.py /cron/
+COPY ./app/scraper.py /cron/
+COPY ./app/scrapefunctions.py /cron/
+COPY ./app/consts.py /cron/
 
 CMD tor
