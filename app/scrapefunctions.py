@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 import logging
@@ -6,6 +5,7 @@ import requests
 
 from consts import \
     OPENWEATHER_API_URL, \
+    OPENWEATHER_APP_ID, \
     VOOR_ZONSOPGANG, \
     NA_ZONSOPGANG, \
     NA_ZONSONDERGANG
@@ -13,13 +13,15 @@ from consts import \
 
 def get_weather(lat, lon, time_unix):
     params = {
-        'APPID': os.getenv('OPENWEATHER_APP_ID'),
+        'appid': OPENWEATHER_APP_ID,
         'units': 'metric',
         'lang': 'nl',
         'lat': lat,
         'lon': lon,
     }
     r = requests.get(OPENWEATHER_API_URL, params=params)
+    if r.status_code != 200:
+        raise ValueError(f"OpenWeather API error {r.status_code}: {r.text}")
     data = r.json()
 
     # Openweather API rain & snow key seems to vary between "1h" and "3h",
@@ -27,11 +29,15 @@ def get_weather(lat, lon, time_unix):
     rain = list(data['rain'].values())[0] if 'rain' in data else None
     snow = list(data['snow'].values())[0] if 'snow' in data else None
 
-    zonnestand = NA_ZONSOPGANG
-    if time_unix <= data['sys']['sunrise']:
-        zonnestand = VOOR_ZONSOPGANG
-    elif time_unix >= data['sys']['sunset']:
-        zonnestand = NA_ZONSONDERGANG
+    zonnestand = None
+    sys_data = data.get('sys', {})
+    if sys_data:
+        if time_unix <= sys_data['sunrise']:
+            zonnestand = VOOR_ZONSOPGANG
+        elif time_unix >= sys_data['sunset']:
+            zonnestand = NA_ZONSONDERGANG
+        else:
+            zonnestand = NA_ZONSOPGANG
 
     return {
         'type': data['weather'][0]['main'],

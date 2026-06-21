@@ -23,6 +23,7 @@ CONTROLE_TYPES = ['Radar', 'Laser', 'ANPR']
 
 
 OPENWEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
+OPENWEATHER_APP_ID: str = env.str('OPENWEATHER_APP_ID')
 
 VOOR_ZONSOPGANG = 'voor_zonsopgang'
 NA_ZONSOPGANG = 'na_zonsopgang'

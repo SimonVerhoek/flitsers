@@ -42,9 +42,9 @@ def home(request: Request):
         ]
 
         return templates.TemplateResponse(
-            name="content.html",
+            request,
+            "content.html",
             context={
-                "request": request,
                 "context": dict(
                     flitsers_today=[MeldingSchema.model_validate(melding).model_dump() for melding in flitsers_today],
                     flitsers_total_count=flitsers_total_count,
