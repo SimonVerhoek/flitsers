@@ -48,7 +48,7 @@ def home(request: Request):
                 "context": dict(
                     flitsers_today=[MeldingSchema.model_validate(melding).model_dump() for melding in flitsers_today],
                     flitsers_total_count=flitsers_total_count,
-                    first_flitser=MeldingSchema.model_validate(first_flitser).model_dump(),
+                    first_flitser=MeldingSchema.model_validate(first_flitser).model_dump() if first_flitser else None,
                     datasets=datasets,
                     time_slots=time_slots,
                     last_updated=dir_last_updated("static/js"),

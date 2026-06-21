@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "flitserdata"
-version = "0.1.0"
+version = "0.2.0"
 description = "Data over flitsers in Nederland"
-authors = ["Simon Verhoek <simon@simonic.nl>"]
+authors = ["Simon Verhoek <contact+flitserdata@simonverhoek.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -13,6 +13,9 @@ jinja2 = "^3.1.2"
 sqlalchemy = "^2.0.21"
 psycopg2-binary = "^2.9.9"
 environs = "^9.5.0"
+requests = "^2.31.0"
+PySocks = "^1.7.1"
+beautifulsoup4 = "^4.12.0"
 
 
 [build-system]

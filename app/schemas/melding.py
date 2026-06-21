@@ -12,9 +12,9 @@ class MeldingSchema(BaseSchema):
     datum: date
     soort_weg: str
     wegnummer: str
-    zijde: str
+    rijrichting: str
     hm_paal: str
-    type_controle: str
+    type_controle: str | None
     tijd_van_melden: time
     details: str
     laatste_activiteit: time | None

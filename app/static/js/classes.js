@@ -86,10 +86,10 @@ class SpeedingCam {
 							<td>Datum:</td><td>${moment(this.datum).format('DD-MM-YYYY')}</td>
 						</tr>
 						<tr>
-							<td>Type:</td><td>${this.type_controle}</td>
+							<td>Locatie:</td><td>${this.wegnummer} (${this.soort_weg}), hectometerpaal ${this.hm_paal}</td>
 						</tr>
 						<tr>
-							<td>Locatie:</td><td>${this.wegnummer} (${this.soort_weg}), hectometerpaal ${this.hm_paal}</td>
+							<td>Rijrichting:</td><td>${this.rijrichting}</td>
 						</tr>
 						<tr>
 							<td>Activiteit:</td><td>van  ${this.tijd_van_melden} tot ${last_activity}</td>
