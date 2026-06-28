@@ -5,7 +5,6 @@ older db entries.
 
 from model import Melding, db
 from scrapefunctions import get_hm_paal_coordinates
-from sqlalchemy import *
 
 
 def get_missing_coordinates():

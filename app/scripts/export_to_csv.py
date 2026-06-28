@@ -1,7 +1,6 @@
 import csv
 
 from model import Melding, db
-from sqlalchemy import *
 
 
 def export_to_csv():
