@@ -12,9 +12,9 @@ class MeldingSchema(BaseSchema):
     datum: date
     soort_weg: str
     wegnummer: str
-    zijde: str
+    rijrichting: str
     hm_paal: str
-    type_controle: str
+    type_controle: str | None
     tijd_van_melden: time
     details: str
     laatste_activiteit: time | None
@@ -46,6 +46,4 @@ class MeldingSchema(BaseSchema):
 
     @field_serializer("laatste_activiteit")
     def serialize_laatste_activiteit(self, laatste_activiteit: time):
-        return (
-            time.strftime(laatste_activiteit, "%H:%M:%S") if laatste_activiteit else ""
-        )
+        return time.strftime(laatste_activiteit, "%H:%M:%S") if laatste_activiteit else ""

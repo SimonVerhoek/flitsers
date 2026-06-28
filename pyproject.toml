@@ -1,20 +1,32 @@
 [tool.poetry]
 name = "flitserdata"
-version = "0.1.0"
+version = "0.2.0"
 description = "Data over flitsers in Nederland"
-authors = ["Simon Verhoek <simon@simonic.nl>"]
+authors = ["Simon Verhoek <contact+flitserdata@simonverhoek.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.103.2"
-uvicorn = "^0.23.2"
-jinja2 = "^3.1.2"
+fastapi = "^0.138.0"
+uvicorn = "^0.49.0"
+jinja2 = "^3.1.6"
 sqlalchemy = "^2.0.21"
-psycopg2-binary = "^2.9.9"
-environs = "^9.5.0"
+psycopg2-binary = "^2.9.12"
+environs = "^15.0.1"
+requests = "^2.34.2"
+PySocks = "^1.7.1"
+beautifulsoup4 = "^4.15.0"
 
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.6.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+exclude = ""

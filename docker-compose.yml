@@ -18,18 +18,6 @@ services:
     depends_on:
       - testdb
 
-  cronjobs:
-    container_name: cronjobs
-    build:
-      context: .
-      dockerfile: Dockerfile-cron.dev
-    volumes:
-      - .:/cron
-    env_file:
-      - .env
-    depends_on:
-      - testdb
-
   testdb:
     image: postgres:11-alpine
     container_name: testdb

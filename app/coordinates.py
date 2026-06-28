@@ -2,9 +2,8 @@
 Script for adding location coordinates to
 older db entries.
 """
-from sqlalchemy import *
 
-from model import db, Melding
+from model import Melding, db
 from scrapefunctions import get_hm_paal_coordinates
 
 
@@ -14,7 +13,7 @@ def get_missing_coordinates():
     for melding in melding_without_coordinates:
         coordinates = get_hm_paal_coordinates(melding=melding)
         melding.locatie = coordinates if coordinates else "onbekend"
-        if coordinates and coordinates != 'onbekend':
+        if coordinates and coordinates != "onbekend":
             melding.locatie_lat = coordinates[0]
             melding.locatie_lon = coordinates[1]
 
@@ -22,7 +21,7 @@ def get_missing_coordinates():
 
 
 def retry_unknown_coordinates():
-    melding_with_unknown_coordinates = Melding.query.filter_by(locatie='onbekend').all()
+    melding_with_unknown_coordinates = Melding.query.filter_by(locatie="onbekend").all()
 
     for melding in melding_with_unknown_coordinates:
         coordinates = get_hm_paal_coordinates(melding=melding)
@@ -33,13 +32,13 @@ def retry_unknown_coordinates():
 
 
 def retry_wrong_coordinates():
-    melding_with_wrong_coordinates = Melding.query.filter(Melding.locatie.like('{%')).all()
+    melding_with_wrong_coordinates = Melding.query.filter(Melding.locatie.like("{%")).all()
 
     for melding in melding_with_wrong_coordinates:
         coordinates = melding.locatie[1:-1]
         melding.locatie = coordinates
 
-        coordinates = coordinates.split(',')
+        coordinates = coordinates.split(",")
         melding.locatie_lat = coordinates[0]
         melding.locatie_lon = coordinates[1]
 

@@ -1,10 +1,8 @@
 from datetime import date, datetime, time
 
+from consts import ZONNESTANDEN
 from sqlalchemy import Column, DateTime, Enum, Float, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
-
-from consts import ZONNESTANDEN
-
 
 Base = declarative_base()
 
@@ -14,11 +12,7 @@ class DictSerializable(object):
         result = dict()
         for key in self.__mapper__.c.keys():
             value = getattr(self, key)
-            if (
-                isinstance(value, datetime)
-                or isinstance(value, time)
-                or isinstance(value, date)
-            ):
+            if isinstance(value, datetime) or isinstance(value, time) or isinstance(value, date):
                 value = value.isoformat()
             result[key] = value
         return result
@@ -33,9 +27,9 @@ class Melding(Base, DictSerializable):
     datum = Column(DateTime, nullable=False, default=datetime.now())
     soort_weg = Column(String, nullable=False)
     wegnummer = Column(String, nullable=False)
-    zijde = Column(String, nullable=False)
+    rijrichting = Column(String, nullable=True)
     hm_paal = Column(String, nullable=False)
-    type_controle = Column(String, nullable=False)
+    type_controle = Column(String, nullable=True)
     tijd_van_melden = Column(Time, nullable=False)
     details = Column(String)
     laatste_activiteit = Column(DateTime)

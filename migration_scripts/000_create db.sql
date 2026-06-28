@@ -1,5 +1,5 @@
 CREATE TABLE melding(
-	id INTEGER PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	datum DATE NOT NULL,
 	soort_weg VARCHAR NOT NULL,
 	wegnummer VARCHAR NOT NULL,
@@ -10,4 +10,3 @@ CREATE TABLE melding(
 	details VARCHAR,
 	laatste_activiteit TIME WITHOUT TIME ZONE
 );
-	

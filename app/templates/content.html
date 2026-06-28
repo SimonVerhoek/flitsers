@@ -3,7 +3,7 @@
     <script type="text/javascript">
         backendData = {
           todays_speed_cams: {{ context.flitsers_today|tojson|safe }},
-          first_speed_cam_date: {{ context.first_flitser.datum|tojson|safe }},
+          first_speed_cam_date: {{ (context.first_flitser.datum if context.first_flitser else none)|tojson|safe }},
           datasets: {{ context.datasets|tojson|safe }},
           time_slots: {{ context.time_slots|tojson|safe }},
           mapbox_access_token: {{ context.mapbox_acess_token|tojson|safe }},
@@ -129,7 +129,7 @@
                 </tr>
                 <tr>
                     <td>Gemeten sinds:</td>
-                    <td>{{ context.first_flitser.datum }}</td>
+                    <td>{{ context.first_flitser.datum if context.first_flitser else '-' }}</td>
                 </tr>
             </table>
         </div>

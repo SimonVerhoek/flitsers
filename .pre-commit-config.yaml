@@ -1,0 +1,68 @@
+files: |
+  (?x)(
+    ^app/|
+    ^tests/|
+    ^migration_scripts/|
+    
+    ^pyproject.toml|
+    ^poetry.lock
+  )
+exclude: app/static/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # filesystem
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [
+          --fix=lf,
+        ]
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-executables-have-shebangs
+      - id: check-illegal-windows-names
+      - id: trailing-whitespace
+      - id: check-case-conflict
+      - id: name-tests-test
+        args: [
+          --pytest-test-first
+        ]
+        exclude: stubs
+      # linting
+      - id: check-ast
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+      # git quality
+      - id: check-merge-conflict
+      - id: no-commit-to-branch
+      - id: check-added-large-files
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/python-poetry/poetry
+    rev: 1.6.1
+    hooks:
+      - id: poetry-check
+        language_version: python3.11
+      - id: poetry-lock
+        language_version: python3.11
+
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 26.5.1
+    hooks:
+      - id: black
+        args: [
+          --config=pyproject.toml,
+        ]
+
+#  - repo: https://github.com/pycqa/isort
+#    rev: 6.0.1
+#    hooks:
+#      - id: isort
+#        name: isort (python)
