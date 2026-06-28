@@ -2,19 +2,17 @@ import os
 from datetime import datetime
 from typing import List
 
+import db
+from consts import CONTROLE_TYPES, MAPBOX_ACCESS_TOKEN, TIME_SLOTS
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from model import Melding
+from schemas.melding import MeldingSchema
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
-
-import db
-from consts import CONTROLE_TYPES, MAPBOX_ACCESS_TOKEN, TIME_SLOTS
-from model import Melding
-from schemas.melding import MeldingSchema
-
 
 app = FastAPI()
 
@@ -46,16 +44,22 @@ def home(request: Request):
             "content.html",
             context={
                 "context": dict(
-                    flitsers_today=[MeldingSchema.model_validate(melding).model_dump() for melding in flitsers_today],
+                    flitsers_today=[
+                        MeldingSchema.model_validate(melding).model_dump()
+                        for melding in flitsers_today
+                    ],
                     flitsers_total_count=flitsers_total_count,
-                    first_flitser=MeldingSchema.model_validate(first_flitser).model_dump() if first_flitser else None,
+                    first_flitser=(
+                        MeldingSchema.model_validate(first_flitser).model_dump()
+                        if first_flitser
+                        else None
+                    ),
                     datasets=datasets,
                     time_slots=time_slots,
                     last_updated=dir_last_updated("static/js"),
                     mapbox_acess_token=MAPBOX_ACCESS_TOKEN,
                 ),
-            }
-
+            },
         )
 
 

@@ -46,6 +46,4 @@ class MeldingSchema(BaseSchema):
 
     @field_serializer("laatste_activiteit")
     def serialize_laatste_activiteit(self, laatste_activiteit: time):
-        return (
-            time.strftime(laatste_activiteit, "%H:%M:%S") if laatste_activiteit else ""
-        )
+        return time.strftime(laatste_activiteit, "%H:%M:%S") if laatste_activiteit else ""

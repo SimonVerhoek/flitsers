@@ -10,4 +10,3 @@ CREATE TABLE melding(
 	details VARCHAR,
 	laatste_activiteit TIME WITHOUT TIME ZONE
 );
-	
