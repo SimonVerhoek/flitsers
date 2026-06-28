@@ -4,7 +4,12 @@ source $HOME/.profile
 
 echo 'Starting Tor...'
 tor > /dev/null &
-sleep 15
+
+echo 'Waiting for Tor SOCKS proxy...'
+for i in $(seq 1 30); do
+    nc -z 127.0.0.1 9050 2>/dev/null && break
+    sleep 2
+done
 
 echo 'Starting scraper...'
 source venv/bin/activate
