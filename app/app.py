@@ -13,8 +13,10 @@ from schemas.melding import MeldingSchema
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 app = FastAPI()
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
