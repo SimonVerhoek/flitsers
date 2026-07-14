@@ -13,7 +13,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR app
 
 RUN apt-get update \
-    && apt-get install -y build-essential bash vim tor \
+    && apt-get install -y curl gpg apt-transport-https \
+    && curl -fsSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc \
+       | gpg --dearmor -o /usr/share/keyrings/tor-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org bookworm main" \
+       > /etc/apt/sources.list.d/tor.list \
+    && apt-get update \
+    && apt-get install -y build-essential bash vim tor deb.torproject.org-keyring \
     && pip3 install --upgrade pip setuptools
 
 COPY pyproject.toml poetry.lock ./
